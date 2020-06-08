@@ -1,6 +1,7 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
+	const helpers = rigidbot.helpers;
 	rigidbot.commands.push(new Command({
 		name: "unban",
 		desc: "Unbans a member from the guild.",
@@ -15,17 +16,26 @@ module.exports = rigidbot => {
 			if (e.args.length != 1) {
 				return false;
 			}
-			const user = utils.toUser(e.args[0]);
+			const user = helpers.toUser(e.args[0]);
 			if (user != null) {
 				try {
 					await e.guild.members.unban(user);
 				} catch(err) {
-					new utils.Message(e.channel, e.user, "Could not unban that user.").create();
+					new utils.Message({
+						channel: e.channel,
+						user: e.user
+					}, "Could not unban that user.").create();
 					return true;
 				}
-				new utils.Message(e.channel, e.user, "The user **" + user.tag + "** has been unbanned.").create();
+				new utils.Message({
+					channel: e.channel,
+					user: e.user
+				}, "The user **" + user.tag + "** has been unbanned.").create();
 			} else {
-				new utils.Message(e.channel, e.user, "That user could not be found.").create();
+				new utils.Message({
+					channel: e.channel,
+					user: e.user
+				}, "That user could not be found.").create();
 			}
 			return true;
 		}

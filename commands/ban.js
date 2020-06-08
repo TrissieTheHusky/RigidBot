@@ -1,10 +1,12 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
+	const helpers = rigidbot.helpers;
 	const utils = rigidbot.utils;
 	rigidbot.commands.push(new Command({
 		name: "ban",
 		desc: "Bans a member from the guild with an optional reason.",
 		usage: [
+			"ban [member]",
 			"ban [member] [reason...]"
 		],
 		perms: ["BAN_MEMBERS"],
@@ -16,7 +18,7 @@ module.exports = rigidbot => {
 			if (e.args.length == 0) {
 				return false;
 			}
-			const user = utils.toMember(e.args[0], e.guild);
+			const user = helpers.toMember(e.args[0], e.guild);
 			const reason = e.args.length > 1 ? e.args.slice(1).join(" ") : "an unknown reason";
 			if (user != null) {
 				if (user.bannable) {

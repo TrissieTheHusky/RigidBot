@@ -1,5 +1,5 @@
 
-const fs = require("fs");
+const fs = require("fs-extra");
 
 module.exports = class Config {
 	
@@ -70,9 +70,11 @@ module.exports = class Config {
 	}
 	
 	save() {
+		fs.ensureFileSync(this.path);
 		fs.writeFileSync(this.path, JSON.stringify(this.data));
 	}
 	load() {
+		fs.ensureFileSync(this.path);
 		var text = fs.readFileSync(this.path);
 		if (text == "") text = "{}";
 		this.data = JSON.parse(text);

@@ -29,33 +29,43 @@ module.exports = rigidbot => {
 			} else if (e.args.length == 1) {
 				const name = e.args[0];
 				var exists = false;
-				var hasinfo = false;
-				rigidbot.commands.forEach(cmd => {
-					if (cmd.name.toLowerCase() == name.toLowerCase() && (!cmd.root || rigidbot.helpers.users.root(e.user))) {
-						exists = true;
-						if (cmd.info.length > 0) {
-							hasinfo = true;
-							new utils.Pages({
-								channel: e.channel, user: e.user
-							}, {
-								pages: cmd.info, embed: {
-									color: 0xFF0000,
-									title: "**Info: __" + name.toLowerCase() + "__**"
-								}
-							}).create();
-						}
+				var cmd = null;
+				rigidbot.commands.forEach(item => {
+					if (item.name.toLowerCase() == name && (!item.root || rigidbot.helpers.isRootUser(e.user))) {
+						cmd = item;
 					}
 				});
-				if (!exists) {
+				if (cmd == null) {
+					rigidbot.commands.forEach(item => {
+						item.alias.forEach(alias => {
+							if (alias.toLowerCase() == name && (!item.root || rigidbot.helpers.isRootUser(e.user))) {
+								cmd = item;
+							}
+						});
+					});
+				}
+				if (cmd != null) {
+					if (cmd.info.length > 0) {
+						hasinfo = true;
+						new utils.Pages({
+							channel: e.channel, user: e.user
+						}, {
+							pages: cmd.info, embed: {
+								color: 0xFF0000,
+								title: "**Info: __" + name.toLowerCase() + "__**"
+							}
+						}).create();
+					} else {
+						new utils.Message({
+							channel: e.channel,
+							user: e.user
+						}, "That command has no info pages.").create();
+					}
+				} else {
 					new utils.Message({
 						channel: e.channel,
 						user: e.user
 					}, "That command does not exist.").create();
-				} else if (!hasinfo) {
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "That command has no info pages.").create();
 				}
 			} else {
 				return false;

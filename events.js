@@ -2,6 +2,7 @@ module.exports = rigidbot => {
 	const bot = rigidbot.bot;
 	const utils = rigidbot.utils;
 	bot.once("ready", async () => {
+		rigidbot.helpers.ensureConfig();
 		await bot.user.setPresence({
 			activity: {
 				name: "$help",
@@ -21,7 +22,7 @@ module.exports = rigidbot => {
 		if (msg.author.bot) return;
 		if (msg.guild != null) {
 			const guild = msg.guild.id;
-			rigidbot.helpers.guilds.ensure(guild);
+			rigidbot.helpers.ensureGuild(guild);
 			const symbol = rigidbot.configs.guilds.get(guild, "symbol");
 			var content = msg.content;
 			const botId = bot.user.id;
@@ -74,14 +75,14 @@ module.exports = rigidbot => {
 					}
 				}
 				if (command != undefined) {
-					if (!command.root || rigidbot.helpers.users.root(e.user)) {
-						if (e.member.hasPermission(command.perms) || rigidbot.helpers.users.root(e.user)) {
+					if (!command.root || rigidbot.helpers.isRootUser(e.user)) {
+						if (e.member.hasPermission(command.perms) || isRootUser(e.user)) {
 							const flag = await command.run(e);
 							if (!flag) {
-								new utils.Pages({
+								new utils.Items({
 									channel: e.channel, user: e.user
 								}, {
-									pages: command.usage, embed: {
+									items: command.usage, embed: {
 										color: 0xFF7722,
 										title: "**Usage: __" + name.toLowerCase() + "__**"
 									}
