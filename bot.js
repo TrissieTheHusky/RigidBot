@@ -27,7 +27,7 @@ rigidbot.utils = require("./utils.js")(bot);
 
 require("dotenv").config();
 require("./events.js")(rigidbot);
-[ "help", "eval", "support", "prefix", "ping", "purge", "kick", "ban", "unban", "dice", "coinflip"
+[ "help", "eval", "support", "prefix", "ping", "stats", "purge", "kick", "ban", "unban", "dice", "coin"
 ].forEach(name => require("./commands/" + name + ".js")(rigidbot));
 
 bot.login(process.env.TOKEN);

@@ -22,7 +22,7 @@ module.exports = rigidbot => {
 				channel: e.channel,
 				user: e.user
 			}, {
-				title: "***Latency***",
+				title: "**Bot Latency**",
 				color: 0x99FF00,
 				desc: "Bot: " + bot + "\n"
 					+ "API: " + api

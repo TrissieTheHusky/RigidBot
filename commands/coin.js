@@ -2,7 +2,7 @@ const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
 	rigidbot.commands.push(new Command({
-		name: "coinflip",
+		name: "coin",
 		alias: ["coin", "flip", "cf"],
 		desc: "Flips a coin and tells you the result.",
 		usage: [
