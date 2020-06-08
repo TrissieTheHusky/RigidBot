@@ -1,8 +1,11 @@
 module.exports = rigidbot => {
 	const bot = rigidbot.bot;
 	const utils = rigidbot.utils;
+	const helpers = rigidbot.helpers;
+	const logs = rigidbot.configs.logs;
 	bot.once("ready", async () => {
 		rigidbot.helpers.ensureConfig();
+		rigidbot.helpers.ensureLogs();
 		await bot.user.setPresence({
 			activity: {
 				name: "$help",
@@ -13,10 +16,18 @@ module.exports = rigidbot => {
 		console.log("RigidBot has been initialized.");
 	});
 	bot.on("guildCreate", guild => {
-		console.log("Joined: " + guild.name);
+		logs.get("joins").push({
+			time: Date.now(),
+			name: guild.name,
+			id: guild.id
+		});
 	});
 	bot.on("guildDelete", guild => {
-		console.log("Left: " + guild.name);
+		logs.get("leaves").push({
+			time: Date.now(),
+			name: guild.name,
+			id: guild.id
+		});
 	});
 	bot.on("message", async msg => {
 		if (msg.author.bot) return;

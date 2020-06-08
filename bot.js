@@ -10,7 +10,6 @@ require("./events.js")(rigidbot);
 
 bot.login(process.env.TOKEN);
 
-process.on('unhandledRejection', (error, p) => {
-	console.log('=== UNHANDLED REJECTION ===');
+process.on("unhandledRejection", error => {
 	console.dir(error.stack);
 });

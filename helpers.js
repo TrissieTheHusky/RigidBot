@@ -8,6 +8,11 @@ module.exports = rigidbot => {
 		const cfg = rigidbot.configs.config;
 		cfg.create("symbol", "$");
 	};
+	utils.ensureLogs = () => {
+		const cfg = rigidbot.configs.logs;
+		cfg.create("joins", []);
+		cfg.create("leaves", []);
+	};
 	utils.ensureGuild = id => {
 		const cfg = rigidbot.configs.guilds;
 		const main = rigidbot.configs.config;
