@@ -1,3 +1,4 @@
+const repl = require("./repl.js");
 require("dotenv").config();
 
 const bot = new (require("discord.js").Client)({
@@ -20,3 +21,5 @@ bot.login(process.env.TOKEN);
 process.on("unhandledRejection", error => {
 	console.dir(error.stack);
 });
+
+repl.run(rigidbot);

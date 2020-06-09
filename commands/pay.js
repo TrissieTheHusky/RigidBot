@@ -36,6 +36,7 @@ module.exports = rigidbot => {
 				}, "You may not pay yourself.").create();
 				return true;
 			}
+			helpers.ensureUser(user.id);
 			var other = users.get(user.id, "balance");
 			const payment = +e.args[1];
 			if (isNaN(payment) || payment <= 0 || payment == Infinity) {
