@@ -16,6 +16,13 @@ module.exports = rigidbot => {
 		});
 		console.log("RigidBot has been initialized.");
 	});
+	bot.on("messageDelete", message => {
+		if (message.partial) return;
+		guilds.delete(message.guild.id, "reactionroles", message.channel.id, message.id);
+		if (!Object.keys(guilds.get(message.guild.id, "reactionroles", message.channel.id)).length) {
+			guilds.delete(message.guild.id, "reactionroles", message.channel.id);
+		}
+	});
 	bot.on("messageReactionAdd", async (reaction, user) => {
 		if (reaction.message.partial) {
 			try {
@@ -93,7 +100,7 @@ module.exports = rigidbot => {
 		const c = o.channel.id;
 		const m = o.id;
 		const member = await o.guild.members.fetch(user.id);
-		helpers.ensureReactionRoles(g, c, m);
+		if (!guilds.has(g, "reactionroles", c, m)) return;
 		const roles = guilds.get(g, "reactionroles", c, m);
 		roles.forEach(pair => {
 			if (helpers.sameEmoji(helpers.toEmoji(pair.emoji, o.guild), reaction.emoji)) {
@@ -117,7 +124,7 @@ module.exports = rigidbot => {
 		const c = o.channel.id;
 		const m = o.id;
 		const member = await o.guild.members.fetch(user.id);
-		helpers.ensureReactionRoles(g, c, m);
+		if (!guilds.has(g, "reactionroles", c, m)) return;
 		const roles = guilds.get(g, "reactionroles", c, m);
 		roles.forEach(pair => {
 			if (helpers.sameEmoji(helpers.toEmoji(pair.emoji, o.guild), reaction.emoji)) {
@@ -179,6 +186,7 @@ module.exports = rigidbot => {
 			name: guild.name,
 			id: guild.id
 		});
+		guilds.delete(guild.id);
 	});
 	bot.on("message", async msg => {
 		if (msg.author.bot) return;

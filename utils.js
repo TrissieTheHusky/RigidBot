@@ -10,7 +10,7 @@ module.exports = rigidbot => {
 		});
 	});
 	bot.on("messageReactionAdd", async (reaction, user) => {
-		if (user.id == bot.user.id) return;
+		if (user.bot) return;
 		if (reaction.partial) {
 			try {
 				await reaction.fetch();
@@ -18,14 +18,35 @@ module.exports = rigidbot => {
 				return;
 			}
 		}
-		menus.forEach(async menu => {
+		menus.forEach(menu => {
 			if (reaction.message == menu.message) {
 				for (const emoji in menu.buttons) {
 					const button = menu.buttons[emoji];
 					if (reaction.emoji.name == emoji) {
-						try {
-							await reaction.users.remove(user);
-						} catch (e) { }
+						reaction.users.remove(user).catch(err => {});
+						if (menu.user == undefined || menu.user.id == user.id) {
+							button(user);
+						}
+					}
+				}
+			}
+		});
+	});
+	bot.on("messageReactionRemove", async (reaction, user) => {
+		if (user.bot) return;
+		if (reaction.partial) {
+			try {
+				await reaction.fetch();
+			} catch (e) {
+				return;
+			}
+		}
+		menus.forEach(menu => {
+			if (reaction.message == menu.message) {
+				for (const emoji in menu.buttons) {
+					const button = menu.buttons[emoji];
+					if (reaction.emoji.name == emoji) {
+						reaction.users.remove(user).catch(err => {});
 						if (menu.user == undefined || menu.user.id == user.id) {
 							button(user);
 						}

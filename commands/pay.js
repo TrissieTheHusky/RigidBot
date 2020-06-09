@@ -29,6 +29,13 @@ module.exports = rigidbot => {
 				}, "Cannot pay an unknown user.").create();
 				return true;
 			}
+			if (id == user.id) {
+				new utils.Message({
+					channel: e.channel,
+					user: e.user
+				}, "You may not pay yourself.").create();
+				return true;
+			}
 			var other = users.get(user.id, "balance");
 			const payment = +e.args[1];
 			if (isNaN(payment) || payment <= 0 || payment == Infinity) {

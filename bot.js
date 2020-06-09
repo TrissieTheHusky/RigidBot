@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const bot = new (require("discord.js").Client)({
 	partials: [
 		"MESSAGE",

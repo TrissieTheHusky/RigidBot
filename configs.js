@@ -4,7 +4,6 @@ module.exports = rigidbot => {
 	const list = [
 		"config",
 		"guilds",
-		"channels",
 		"users",
 		"logs"
 	];
