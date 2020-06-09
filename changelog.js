@@ -7,16 +7,14 @@ module.exports = [
 			add("poll command"),
 			add("role command"),
 			add("warn command"),
-			add("tempban command"),
 			add("history command"),
-			add("version command"), //
-			add("activity rewards"),
+			add("version command"),
 			add("automatic role config"),
 			add("reaction role config")
 		]
 	}, {
 		name: "Introductory Update",
-		version: "v1.1A", //
+		version: "v1.1A",
 		changes: [
 			add("help command"),
 			add("support command"),

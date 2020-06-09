@@ -1,5 +1,11 @@
 require("dotenv").config();
-const bot = new (require("discord.js").Client);
+const bot = new (require("discord.js").Client)({
+	partials: [
+		"MESSAGE",
+		"CHANNEL",
+		"REACTION"
+	]
+});
 const rigidbot = {bot};
 
 require("./configs.js")(rigidbot);

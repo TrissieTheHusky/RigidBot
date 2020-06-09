@@ -68,10 +68,22 @@ module.exports = class Config {
 		const key = items[len - 1];
 		return cur[key];
 	}
+	has(...items) {
+		var cur = this.data;
+		const len = items.length;
+		for (var i = 0; i < len - 1; i++) {
+			if (!(items[i] in cur)) {
+				return false;
+			}
+			cur = cur[items[i]];
+		}
+		const key = items[len - 1];
+		return key in cur;
+	}
 	
 	save() {
 		fs.ensureFileSync(this.path);
-		fs.writeFileSync(this.path, JSON.stringify(this.data));
+		fs.writeFileSync(this.path, JSON.stringify(this.data, null, 4));
 	}
 	load() {
 		fs.ensureFileSync(this.path);

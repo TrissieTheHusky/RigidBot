@@ -24,6 +24,7 @@ module.exports = rigidbot => {
 				if (user.kickable) {
 					await user.send("You have been kicked from **" + e.guild.name + "** for _" + reason + "_.").catch(err => {});
 					await user.kick(reason);
+					helpers.logHistory(e.guild, user.user, "kick", reason, -1);
 					new utils.Message({
 						channel: e.channel,
 						user: e.user

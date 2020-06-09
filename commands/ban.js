@@ -24,6 +24,7 @@ module.exports = rigidbot => {
 				if (user.bannable) {
 					await user.send("You have been banned from **" + e.guild.name + "** for _" + reason + "_.").catch(err => {});
 					await user.ban(reason);
+					helpers.logHistory(e.guild, user.user, "ban", reason, -1);
 					new utils.Message({
 						channel: e.channel,
 						user: e.user

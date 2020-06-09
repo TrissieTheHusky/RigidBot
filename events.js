@@ -5,8 +5,8 @@ module.exports = rigidbot => {
 	const logs = rigidbot.configs.logs;
 	const guilds = rigidbot.configs.guilds;
 	bot.once("ready", async () => {
-		rigidbot.helpers.ensureConfig();
-		rigidbot.helpers.ensureLogs();
+		helpers.ensureConfig();
+		helpers.ensureLogs();
 		await bot.user.setPresence({
 			activity: {
 				name: "$help",
@@ -16,16 +16,123 @@ module.exports = rigidbot => {
 		});
 		console.log("RigidBot has been initialized.");
 	});
-	bot.on("guildMemberAdd", member => {
-		logs.get("member-joins").push({
-			time: Date.now(),
-			name: member.user.tag,
-			id: member.id,
-			guild: member.guild.id,
-			server: member.guild.name
+	bot.on("messageReactionAdd", async (reaction, user) => {
+		if (reaction.message.partial) {
+			try {
+				reaction.message.fetch();
+			} catch(e) {
+				return;
+			}
+		}
+		if (user.bot) return;
+		const o = reaction.message;
+		const g = o.guild.id;
+		const c = o.channel.id;
+		const m = o.id;
+		if (guilds.has(g, "polls", c, m)) {
+			var hit = false;
+			const poll = guilds.get(g, "polls", c, m);
+			Object.keys(poll.options).forEach(emoji => {
+				if (helpers.sameEmoji(helpers.toEmoji(emoji, o.guild), reaction.emoji)) {
+					const option = poll.options[emoji];
+					option.count = reaction.count - 1;
+					hit = true;
+				}
+			});
+			if (hit) {
+				const u = bot.users.cache.get(poll.user);
+				if (u == null) return;
+				o.edit(helpers.pollEmbed(u, poll));
+			} else {
+				reaction.remove(user);
+			}
+		}
+	});
+	bot.on("messageReactionRemove", async (reaction, user) => {
+		if (reaction.message.partial) {
+			try {
+				reaction.message.fetch();
+			} catch(e) {
+				return;
+			}
+		}
+		if (user.bot) return;
+		const o = reaction.message;
+		const g = o.guild.id;
+		const c = o.channel.id;
+		const m = o.id;
+		if (guilds.has(g, "polls", c, m)) {
+			var hit = false;
+			const poll = guilds.get(g, "polls", c, m);
+			Object.keys(poll.options).forEach(emoji => {
+				if (helpers.sameEmoji(helpers.toEmoji(emoji, o.guild), reaction.emoji)) {
+					const option = poll.options[emoji];
+					option.count = reaction.count - 1;
+					hit = true;
+				}
+			});
+			if (hit) {
+				const u = bot.users.cache.get(poll.user);
+				if (u == null) return;
+				o.edit(helpers.pollEmbed(u, poll));
+			} else {
+				reaction.remove(user);
+			}
+		}
+	});
+	bot.on("messageReactionAdd", async (reaction, user) => {
+		if (reaction.message.partial) {
+			try {
+				reaction.message.fetch();
+			} catch(e) {
+				return;
+			}
+		}
+		const o = reaction.message;
+		const g = o.guild.id;
+		const c = o.channel.id;
+		const m = o.id;
+		const member = await o.guild.members.fetch(user.id);
+		helpers.ensureReactionRoles(g, c, m);
+		const roles = guilds.get(g, "reactionroles", c, m);
+		roles.forEach(pair => {
+			if (helpers.sameEmoji(helpers.toEmoji(pair.emoji, o.guild), reaction.emoji)) {
+				const role = o.guild.roles.cache.get(pair.role);
+				if (role != null) {
+					member.roles.add(role);
+				}
+			}
 		});
+	});
+	bot.on("messageReactionRemove", async (reaction, user) => {
+		if (reaction.message.partial) {
+			try {
+				reaction.message.fetch();
+			} catch(e) {
+				return;
+			}
+		}
+		const o = reaction.message;
+		const g = o.guild.id;
+		const c = o.channel.id;
+		const m = o.id;
+		const member = await o.guild.members.fetch(user.id);
+		helpers.ensureReactionRoles(g, c, m);
+		const roles = guilds.get(g, "reactionroles", c, m);
+		roles.forEach(pair => {
+			if (helpers.sameEmoji(helpers.toEmoji(pair.emoji, o.guild), reaction.emoji)) {
+				const role = o.guild.roles.cache.get(pair.role);
+				if (role != null) {
+					member.roles.remove(role);
+				}
+			}
+		});
+	});
+	bot.on("guildMemberAdd", member => {
 		const gid = member.guild.id;
 		helpers.ensureGuild(gid);
+		const roles = guilds.get(gid, "autoroles", member.user.bot ? "bot" : "user");
+		member.roles.add(roles);
 		const channelid = guilds.get(gid, "message-channel");
 		if (channelid == null) return;
 		const channel = bot.channels.cache.get(channelid);
@@ -42,13 +149,6 @@ module.exports = rigidbot => {
 		channel.send(message);
 	});
 	bot.on("guildMemberRemove", member => {
-		logs.get("member-leaves").push({
-			time: Date.now(),
-			name: member.user.tag,
-			id: member.id,
-			guild: member.guild.id,
-			server: member.guild.name
-		});
 		const gid = member.guild.id;
 		helpers.ensureGuild(gid);
 		const channelid = guilds.get(gid, "message-channel");
@@ -102,12 +202,12 @@ module.exports = rigidbot => {
 			}
 			if (matches) {
 				content = content.trim();
-				const items = content.split(/ +/);
+				const items = content.split(" ");
 				const name = items[0];
 				const args = items.slice(1);
 				const e = {
 					msg: msg,
-					text: content,
+					text: msg.content,
 					guild: msg.guild,
 					channel: msg.channel,
 					user: msg.author,
