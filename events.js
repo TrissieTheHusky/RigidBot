@@ -3,6 +3,7 @@ module.exports = rigidbot => {
 	const utils = rigidbot.utils;
 	const helpers = rigidbot.helpers;
 	const logs = rigidbot.configs.logs;
+	const guilds = rigidbot.configs.guilds;
 	bot.once("ready", async () => {
 		rigidbot.helpers.ensureConfig();
 		rigidbot.helpers.ensureLogs();
@@ -14,6 +15,54 @@ module.exports = rigidbot => {
 			status: "online"
 		});
 		console.log("RigidBot has been initialized.");
+	});
+	bot.on("guildMemberAdd", member => {
+		logs.get("member-joins").push({
+			time: Date.now(),
+			name: member.displayName,
+			id: member.id,
+			guild: member.guild.id
+		});
+		const gid = member.guild.id;
+		helpers.ensureGuild(gid);
+		const channelid = guilds.get(gid, "channels", "join");
+		if (channelid == null) return;
+		const channel = bot.channels.cache.get(channelid);
+		if (channel == null) return;
+		var message = guilds.get(gid, "messages", "join");
+		if (message == null) return;
+		if (message == "") return;
+		message = message.replace(/\{name\}/g, member.displayName);
+		message = message.replace(/\{guild\}/g, member.guild.name);
+		message = message.replace(/\{user\}/g, member.user.name);
+		message = message.replace(/\{tag\}/g, member.user.tag);
+		message = message.replace(/\{mention\}/g, "<@" + member.user.id + ">");
+		message = message.replace(/\{ping\}/g, "<@" + member.user.id + ">");
+		channel.send(message);
+	});
+	bot.on("guildMemberRemove", member => {
+		logs.get("member-leaves").push({
+			time: Date.now(),
+			name: member.displayName,
+			id: member.id,
+			guild: member.guild.id
+		});
+		const gid = member.guild.id;
+		helpers.ensureGuild(gid);
+		const channelid = guilds.get(gid, "channels", "leave");
+		if (channelid == null) return;
+		const channel = bot.channels.cache.get(channelid);
+		if (channel == null) return;
+		var message = guilds.get(gid, "messages", "leave");
+		if (message == null) return;
+		if (message == "") return;
+		message = message.replace(/\{name\}/g, member.displayName);
+		message = message.replace(/\{guild\}/g, member.guild.name);
+		message = message.replace(/\{user\}/g, member.user.name);
+		message = message.replace(/\{tag\}/g, member.user.tag);
+		message = message.replace(/\{mention\}/g, "<@" + member.user.id + ">");
+		message = message.replace(/\{ping\}/g, "<@" + member.user.id + ">");
+		channel.send(message);
 	});
 	bot.on("guildCreate", guild => {
 		logs.get("joins").push({
@@ -51,7 +100,7 @@ module.exports = rigidbot => {
 			}
 			if (matches) {
 				content = content.trim();
-				const items = content.split(" ");
+				const items = content.split(/ +/);
 				const name = items[0];
 				const args = items.slice(1);
 				const e = {
@@ -87,7 +136,7 @@ module.exports = rigidbot => {
 				}
 				if (command != undefined) {
 					if (!command.root || rigidbot.helpers.isRootUser(e.user)) {
-						if (e.member.hasPermission(command.perms) || isRootUser(e.user)) {
+						if (e.member.hasPermission(command.perms) || rigidbot.helpers.isRootUser(e.user)) {
 							const flag = await command.run(e);
 							if (!flag) {
 								new utils.Items({
