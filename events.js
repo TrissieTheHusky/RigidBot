@@ -19,13 +19,14 @@ module.exports = rigidbot => {
 	bot.on("guildMemberAdd", member => {
 		logs.get("member-joins").push({
 			time: Date.now(),
-			name: member.displayName,
+			name: member.user.tag,
 			id: member.id,
-			guild: member.guild.id
+			guild: member.guild.id,
+			server: member.guild.name
 		});
 		const gid = member.guild.id;
 		helpers.ensureGuild(gid);
-		const channelid = guilds.get(gid, "channels", "join");
+		const channelid = guilds.get(gid, "message-channel");
 		if (channelid == null) return;
 		const channel = bot.channels.cache.get(channelid);
 		if (channel == null) return;
@@ -43,13 +44,14 @@ module.exports = rigidbot => {
 	bot.on("guildMemberRemove", member => {
 		logs.get("member-leaves").push({
 			time: Date.now(),
-			name: member.displayName,
+			name: member.user.tag,
 			id: member.id,
-			guild: member.guild.id
+			guild: member.guild.id,
+			server: member.guild.name
 		});
 		const gid = member.guild.id;
 		helpers.ensureGuild(gid);
-		const channelid = guilds.get(gid, "channels", "leave");
+		const channelid = guilds.get(gid, "message-channel");
 		if (channelid == null) return;
 		const channel = bot.channels.cache.get(channelid);
 		if (channel == null) return;

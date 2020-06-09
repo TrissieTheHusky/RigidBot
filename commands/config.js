@@ -6,29 +6,26 @@ module.exports = rigidbot => {
 	rigidbot.commands.push(new Command({
 		name: "config",
 		usage: [
-			"config guild prefix",
-			"config guild prefix [text]",
-			"config guild message join",
-			"config guild message join [message]",
-			"config guild message leave",
-			"config guild message leave [message]",
-			"config guild channel join",
-			"config guild channel join [mention]",
-			"config guild channel leave",
-			"config guild channel leave [mention]"
+			"config prefix",
+			"config prefix [text]",
+			"config join",
+			"config join [message]",
+			"config leave",
+			"config leave [message]",
+			"config channel"
 		],
 		alias: ["cfg", "setup", "settings"],
 		desc: "Manages settings for guilds, channels, users, and more.",
 		run: async e => {
 			const args = e.args;
-			if (args.length > 0 && args[0] == "guild") {
-				if (args.length == 2 && args[1] == "prefix") {
+			if (args.length > 0) {
+				if (args.length == 1 && args[0] == "prefix") {
 					new utils.Message({
 						channel: e.channel,
 						user: e.user
 					}, "This guild's prefix is " + guilds.get(e.guild.id, "symbol")).create();
 					return true;
-				} else if (args.length == 3 && args[1] == "prefix") {
+				} else if (args.length == 2 && args[1] == "prefix") {
 					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
 						new utils.Message({
 							channel: e.channel,
@@ -36,14 +33,14 @@ module.exports = rigidbot => {
 						}, "You do not have permission to set the guild's prefix.").create();
 						return true;
 					}
-					const text = args[2]
+					const text = args[1]
 					guilds.set(e.guild.id, "symbol", text);
 					new utils.Message({
 						channel: e.channel,
 						user: e.user
 					}, "This guild's prefix is now " + text).create();
 					return true;
-				} else if (args.length == 3 && args[1] == "message" && args[2] == "join") {
+				} else if (args.length == 1 && args[0] == "join") {
 					const msg = guilds.get(e.guild.id, "messages", "join");
 					if (msg == null) {
 						new utils.Message({
@@ -57,7 +54,7 @@ module.exports = rigidbot => {
 						}, msg).create();
 					}
 					return true;
-				} else if (args.length == 3 && args[1] == "message" && args[2] == "leave") {
+				} else if (args.length == 1 && args[0] == "leave") {
 					const msg = guilds.get(e.guild.id, "messages", "leave");
 					if (msg == null) {
 						new utils.Message({
@@ -71,7 +68,7 @@ module.exports = rigidbot => {
 						}, msg).create();
 					}
 					return true;
-				} else if (args.length > 3 && args[1] == "message" && args[2] == "join") {
+				} else if (args.length > 1 && args[0] == "join") {
 					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
 						new utils.Message({
 							channel: e.channel,
@@ -79,14 +76,14 @@ module.exports = rigidbot => {
 						}, "You do not have permission to set the guild's join message.").create();
 						return true;
 					}
-					const text = args.slice(3).join(" ");
+					const text = args.slice(1).join(" ");
 					guilds.set(e.guild.id, "messages", "join", text);
 					new utils.Message({
 						channel: e.channel,
 						user: e.user
 					}, "This guild's join message has been set.").create();
 					return true;
-				} else if (args.length > 3 && args[1] == "message" && args[2] == "leave") {
+				} else if (args.length > 1 && args[0] == "leave") {
 					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
 						new utils.Message({
 							channel: e.channel,
@@ -94,72 +91,42 @@ module.exports = rigidbot => {
 						}, "You do not have permission to set the guild's leave message.").create();
 						return true;
 					}
-					const text = args.slice(3).join(" ");
+					const text = args.slice(1).join(" ");
 					guilds.set(e.guild.id, "messages", "leave", text);
 					new utils.Message({
 						channel: e.channel,
 						user: e.user
 					}, "This guild's leave message has been set.").create();
 					return true;
-				} else if (args.length == 3 && args[1] == "channel" && args[2] == "join") {
-					const channel = guilds.get(e.guild.id, "channels", "join");
+				} else if (args.length == 1 && args[0] == "channel") {
+					const channel = guilds.get(e.guild.id, "message-channel");
 					if (channel == null) {
 						new utils.Message({
 							channel: e.channel,
 							user: e.user
-						}, "This guild's join channel has not been set.").create();
+						}, "This guild's message channel has not been set.").create();
 					} else {
 						new utils.Message({
 							channel: e.channel,
 							user: e.user
-						}, "This guild's join channel is <#" + channel + ">").create();
+						}, "This guild's message channel is <#" + channel + ">").create();
 					}
 					return true;
-				} else if (args.length == 3 && args[1] == "channel" && args[2] == "leave") {
-					const channel = guilds.get(e.guild.id, "channels", "leave");
-					if (channel == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild's leave channel has not been set.").create();
-					} else {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild's leave channel is <#" + channel + ">").create();
-					}
-					return true;
-				} else if (args.length == 4 && args[1] == "channel" && args[2] == "join") {
+				} else if (args.length == 2 && args[0] == "channel") {
 					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
 						new utils.Message({
 							channel: e.channel,
 							user: e.user
-						}, "You do not have permission to set the guild's join channel.").create();
+						}, "You do not have permission to set the guild's message channel.").create();
 						return true;
 					}
-					const text = args[3];
+					const text = args[1];
 					const channel = helpers.toChannel(text);
-					guilds.set(e.guild.id, "channels", "join", channel.id);
+					guilds.set(e.guild.id, "message-channel", channel.id);
 					new utils.Message({
 						channel: e.channel,
 						user: e.user
-					}, "This guild's join channel has been set to <#" + channel.id + ">").create();
-					return true;
-				} else if (args.length == 4 && args[1] == "channel" && args[2] == "leave") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's leave channel.").create();
-						return true;
-					}
-					const text = args[3];
-					const channel = helpers.toChannel(text);
-					guilds.set(e.guild.id, "channels", "leave", channel.id);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "This guild's leave channel has been set to <#" + channel.id + ">").create();
+					}, "This guild's message channel has been set to <#" + channel.id + ">").create();
 					return true;
 				}
 			}

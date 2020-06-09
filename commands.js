@@ -4,6 +4,8 @@ module.exports = rigidbot => {
 		"help",
 		"eval",
 		"support",
+		"version",
+		"changelog",
 		"config",
 		"ping",
 		"stats",

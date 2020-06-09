@@ -24,8 +24,7 @@ module.exports = rigidbot => {
 		cfg.create(id, "symbol", main.get("symbol"));
 		cfg.create(id, "messages", "join", null);
 		cfg.create(id, "messages", "leave", null);
-		cfg.create(id, "channels", "join", null);
-		cfg.create(id, "channels", "leave", null);
+		cfg.create(id, "message-channel", null);
 	};
 	utils.ensureUser = id => {
 		const cfg = rigidbot.configs.users;
@@ -33,6 +32,7 @@ module.exports = rigidbot => {
 	};
 	utils.mentionRegex = new RegExp('^\<@\!?([0-9]+)>$');
 	utils.channelRegex = new RegExp('^\<\#([0-9]+)>$');
+	utils.roleRegex = new RegExp('^\<\@&([0-9]+)>$');
 	utils.toMember = (input, guild) => {
 		const matches = input.match(utils.mentionRegex);
 		return matches ? guild.members.cache.get(matches[1]) : null;
