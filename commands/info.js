@@ -31,9 +31,7 @@ module.exports = rigidbot => {
 				status = "DND";
 			var rolelist = [];
 			member.roles.cache.array().forEach(role => {
-				if (role.id == e.guild.roles.everyone.id) {
-					return;
-				}
+				if (role.id == e.guild.roles.everyone.id) return;
 				rolelist.push("<@&" + role.id + ">");
 			});
 			rolelist = rolelist.join(" ");
