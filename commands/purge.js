@@ -19,15 +19,14 @@ module.exports = rigidbot => {
 				var amount = +e.args[0];
 				if (amount == amount) {
 					if (amount >= 2) {
-						while (amount > 0) {
-							const current = Math.min(amount, 100);
-							amount -= current;
+						if (amount <= 100) {
 							try {
-								await e.channel.bulkDelete(current);
+								await e.channel.bulkDelete(amount);
 							} catch(err) {
 								utils.sendErr(e.channel, "Can only delete messages less than 2 weeks old and the bot requires the permission to do so.");
-								break;
 							}
+						} else {
+							utils.sendErr(e.channel, "You cannot clear more than 100 messages.");
 						}
 					} else {
 						utils.sendErr(e.channel, "You cannot clear less than 2 messages.");

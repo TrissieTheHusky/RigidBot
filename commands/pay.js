@@ -8,7 +8,7 @@ module.exports = rigidbot => {
 		desc: "Pays an amount of coins to another user.",
 		alias: ["transfer"],
 		usage: [
-			"pay [amount] [user]"
+			"pay [user] [amount]"
 		],
 		info: [
 			"This command withdraws an amount of currency from your balance and deposits it into another user's balance.",

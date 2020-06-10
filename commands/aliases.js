@@ -9,9 +9,9 @@ module.exports = rigidbot => {
 			"aliases [command]"
 		],
 		info: [
-			"Shows you aliases of a given command or a list of all command aliases."
+			"Shows you the aliases that you can use for a given command, or a list of every alias and command name that you can use. To get information on a command, use the __help__ command."
 		],
-		desc: "Shows a list of aliases for commands.",
+		desc: "Shows the aliases of commands.",
 		run: async e => {
 			if (e.args.length == 0) {
 				const items = [];

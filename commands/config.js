@@ -28,6 +28,9 @@ module.exports = rigidbot => {
 		],
 		alias: ["cfg", "setup", "settings"],
 		desc: "Manages settings for guilds, channels, users, and more.",
+		info: [
+			"The config command is what you use to set anything up for your guild. It manages the bot's channel lists, messages, roles, and more."
+		],
 		run: async e => {
 			const args = e.args;
 			if (args.length > 0) {

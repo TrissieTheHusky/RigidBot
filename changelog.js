@@ -7,8 +7,12 @@ module.exports = [
 		changes: [
 			add("devlog command"),
 			add("aliases command"),
+			add("more descriptions"),
 			overhaul("the backend"),
 			tweak("color scheme"),
+			tweak("response layout"),
+			tweak("changelog format"),
+			fix("command info"),
 			fix()
 		]
 	}, {
@@ -61,22 +65,22 @@ function remove(name) {
 }
 function fix(thing) {
 	if (thing != undefined) {
-		return "fixed **" + thing + "**";
+		return "+ **fixed " + thing + "**";
 	} else {
-		return "**bug fixes**";
+		return "+ **bug fixes**";
 	}
 }
 function tweak(thing) {
 	if (thing != undefined) {
-		return "**tweaked " + thing + "**";
+		return "+ **tweaked " + thing + "**";
 	} else {
-		return "**small tweaks**";
+		return "+ **small tweaks**";
 	}
 }
 function overhaul(thing) {
 	if (thing != undefined) {
-		return "**overhauled " + thing + "**";
+		return "+ **overhauled " + thing + "**";
 	} else {
-		return "**general overhaul**";
+		return "+ **general overhaul**";
 	}
 }

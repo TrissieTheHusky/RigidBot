@@ -77,7 +77,7 @@ module.exports = rigidbot => {
 								}).create();
 							}
 						} else {
-							e.error("You do not have permission to use this command.");
+							utils.sendErr(e.channel, "You do not have permission to use this command.");
 						}
 					}
 				}
