@@ -19,9 +19,7 @@ module.exports = rigidbot => {
 		],
 		desc: "Shows the developers' stories about their progress and experience with the bot.",
 		run: e => {
-			if (e.args.length) {
-				return false;
-			}
+			if (e.args.length) return false;
 			const pages = [];
 			devlog.forEach(item => {
 				var text = "__" + item.date + "__";
