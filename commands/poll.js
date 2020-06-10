@@ -13,9 +13,7 @@ module.exports = rigidbot => {
 			"format: [emoji] [option...]"
 		],
 		run: async e => {
-			if (e.args.length == 0) {
-				return false;
-			}
+			if (e.args.length == 0) return false;
 			const text = e.args.join(" ");
 			const lines = text.split(/[\t ]*\n[\t ]*/);
 			if (lines.length < 2) return false;
