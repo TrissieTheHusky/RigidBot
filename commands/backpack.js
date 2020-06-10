@@ -18,15 +18,14 @@ module.exports = rigidbot => {
 			const user = e.user;
 			users.user(user.id);
 			const backpack = users.get(user.id, "backpack");
-			items.push("**Backpack Space: __" + backpack.space + "__**");
 			backpack.items.forEach(slot => {
 				const item = rigidbot.items[slot.id];
 				const name = item.name;
 				const emoji = item.emoji;
-				items.push(slot.quantity + "x " + emoji + " __" + name + "__");
+				items.push("**" + slot.quantity + "x** " + emoji + " " + name);
 			});
 			const text = items.join("\n");
-			utils.sendBox(e.channel, "Backpack", config.color("stat"), text);
+			utils.sendBox(e.channel, "Backpack: __" + users.spaceTaken(user.id) + " / " + users.totalSpace(user.id) + "__", config.color("stat"), text);
 			return true;
 		}
 	}));
