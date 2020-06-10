@@ -22,9 +22,9 @@ module.exports = rigidbot => {
 			if (user != null) {
 				if (user.bannable) {
 					if(!reason) 
-						await user.send("You have been kicked from **" + e.guild.name + "**.").catch(err => {});
+						await user.send("You have been banned from **" + e.guild.name + "**.").catch(err => {});
 					else
-						await user.send("You have been kicked from **" + e.guild.name + "** for _" + reason + "_.").catch(err => {});
+						await user.send("You have been banned from **" + e.guild.name + "** for _" + reason + "_.").catch(err => {});
 					await user.ban(reason);
 					logs.logHistory(e.guild.id, user.user.id, "ban", reason, -1);
 					utils.sendBox(e.channel, "**Ban: __" + user.user.tag + "__**", config.color("warn"), reason);
