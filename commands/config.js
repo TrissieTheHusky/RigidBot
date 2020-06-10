@@ -318,10 +318,10 @@ module.exports = rigidbot => {
 					const id = role.id;
 					if (roles.indexOf(id) != -1) {
 						roles.splice(roles.indexOf(id), 1);
-						utils.sendBox(e.channel, "Free Roles", config.color("done"), "That role is no longer a free role.");
+						utils.sendBox(e.channel, "Free Roles", config.color("done"), "<@&" + id + "> is no longer a free role.");
 					} else {
 						roles.push(id);
-						utils.sendBox(e.channel, "Free Roles", config.color("done"), "That role is now a free role.");
+						utils.sendBox(e.channel, "Free Roles", config.color("done"), "<@&" + id + "> is now a free role.");
 					}
 					return true;
 				}
