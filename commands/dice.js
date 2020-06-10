@@ -13,7 +13,7 @@ module.exports = rigidbot => {
 		alias: ["roll", "diceroll", "rolldice"],
 		run: async e => {
 			try {
-				let result = mice.roll(e.args.join(" "));
+				let result = mice.roll_capped(e.args.join(" "), BigInt(10000));
 				new utils.Message({
 					channel: e.channel,
 					user: e.user,
