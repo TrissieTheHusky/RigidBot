@@ -15,17 +15,14 @@ module.exports = rigidbot => {
 			"Warning a user requires a reason and cannot be undone. It should be used sparingly, not all the time."
 		],
 		run: async e => {
-			if (e.args.length < 2) {
-				return false;
-			}
+			if (e.args.length < 2) return false;
 			const user = utils.toMember(e.args[0], e.guild);
 			const reason = e.args.slice(1).join(" ");
 			if (user != null) {
 				logs.logHistory(e.guild.id, user.user.id, "warn", reason, -1);
 				utils.sendBox(e.channel, "Warn", config.color("warn"), "The user **" + user.user.tag + "** has been warned for _" + reason + "_.");
-			} else {
+			} else
 				utils.sendErr(e.channel, "That user could not be found.");
-			}
 			return true;
 		}
 	}));
