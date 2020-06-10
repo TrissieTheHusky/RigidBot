@@ -20,10 +20,13 @@ module.exports = rigidbot => {
 				return false;
 			}
 			const user = utils.toMember(e.args[0], e.guild);
-			const reason = e.args.length > 1 ? e.args.slice(1).join(" ") : "an unknown reason";
+			const reason = e.args.length > 1 ? e.args.slice(1).join(" ") : "";
 			if (user != null) {
 				if (user.kickable) {
-					await user.send("You have been kicked from **" + e.guild.name + "** for _" + reason + "_.").catch(err => {});
+					if(!reason) 
+						await user.send("You have been kicked from **" + e.guild.name + "**.").catch(err => {});
+					else
+						await user.send("You have been kicked from **" + e.guild.name + "** for _" + reason + "_.").catch(err => {});
 					await user.kick(reason);
 					logs.logHistory(e.guild.id, user.user.id, "kick", reason, -1);
 					utils.sendBox(e.channel, "**Kick: __" + user.user.tag + "__**", config.color("warn"), reason);
