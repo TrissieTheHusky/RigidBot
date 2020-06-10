@@ -1,29 +1,32 @@
 const Command = require("../command.js");
-const changelog = require("../changelog.js");
+const devlog = require("../devlog.js");
 module.exports = rigidbot => {
 	const menus = rigidbot.menus;
 	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
-		name: "changelog",
+		name: "devlog",
 		alias: [
-			"changes",
-			"changelogs",
-			"chlog",
-			"chlogs"
+			"dlog",
+			"developerlog",
+			"developmentlog",
+			"devlogs",
+			"developerlogs",
+			"developmentlogs",
+			"dlogs"
 		],
 		usage: [
-			"changelog"
+			"devlog"
 		],
-		desc: "Shows the versions of the bot and the changes made along the way.",
+		desc: "Shows the developers' stories about their progress and experience with the bot.",
 		run: e => {
 			if (e.args.length) {
 				return false;
 			}
 			const pages = [];
-			changelog.forEach(item => {
-				var text = "__" + item.name + "__: **" + item.version + "**";
+			devlog.forEach(item => {
+				var text = "__" + item.date + "__";
 				text += "\n\n";
-				text += item.changes.join("\n");
+				text += item.log.join("\n\n");
 				pages.push(text);
 			});
 			new menus.Pages({
@@ -32,7 +35,7 @@ module.exports = rigidbot => {
 			}, {
 				pages: pages,
 				embed: {
-					title: "**Change Log**",
+					title: "**Dev Log**",
 					color: config.color("info")
 				}
 			}).create();

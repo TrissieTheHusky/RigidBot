@@ -1,7 +1,8 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
-	const helpers = rigidbot.helpers;
 	const utils = rigidbot.utils;
+	const logs = rigidbot.configs.logs;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "ban",
 		desc: "Bans a member from the guild with an optional reason.",
@@ -18,28 +19,19 @@ module.exports = rigidbot => {
 			if (e.args.length == 0) {
 				return false;
 			}
-			const user = helpers.toMember(e.args[0], e.guild);
-			const reason = e.args.length > 1 ? e.args.slice(1).join(" ") : "an unknown reason";
+			const user = utils.toMember(e.args[0], e.guild);
+			const reason = e.args.length > 1 ? e.args.slice(1).join(" ") : "An unknown reason";
 			if (user != null) {
 				if (user.bannable) {
 					await user.send("You have been banned from **" + e.guild.name + "** for _" + reason + "_.").catch(err => {});
 					await user.ban(reason);
-					helpers.logHistory(e.guild, user.user, "ban", reason, -1);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "The user **" + user.user.tag + "** has been banned for _" + reason + "_.").create();
+					logs.logHistory(e.guild.id, user.user.id, "ban", reason, -1);
+					utils.sendBox(e.channel, "**Ban: __" + user.user.tag + "__**", config.color("warn"), reason);
 				} else {
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "That user could not be banned.").create();
+					utils.sendErr(e.channel, "That user could not be banned.");
 				}
 			} else {
-				new utils.Message({
-					channel: e.channel,
-					user: e.user
-				}, "That user could not be found.").create();
+				utils.sendErr(e.channel, "That user could not be found.");
 			}
 			return true;
 		}

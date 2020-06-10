@@ -1,7 +1,7 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
-	const helpers = rigidbot.helpers;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "info",
 		alias: ["information", "userinfo", "userinformation"],
@@ -14,12 +14,9 @@ module.exports = rigidbot => {
 			if (e.args.length > 1) {
 				return false;
 			}
-			const member = e.args.length == 0 ? e.member : helpers.toMember(e.args[0], e.guild);
+			const member = e.args.length == 0 ? e.member : utils.toMember(e.args[0], e.guild);
 			if (member == null) {
-				new utils.Message({
-					channel: e.channel,
-					user: e.user
-				}, "Could not find that user in this guild.").create();
+				utils.sendErr(e.channel, "Could not find that user in this guild.");
 				return true;
 			}
 			const originalStatus = member.presence.status;
@@ -41,11 +38,8 @@ module.exports = rigidbot => {
 				rolelist.push("<@&" + role.id + ">");
 			});
 			rolelist = rolelist.join(" ");
-			new utils.Embedded({
-				channel: e.channel,
-				user: e.user
-			}, {
-				desc: [
+			utils.sendEmbed(e.channel, {
+				description: [
 					"**Display name**: " + member.displayName,
 					"**User Name**: " + member.user.username,
 					"**Account Date**: " + member.user.createdAt,
@@ -60,8 +54,8 @@ module.exports = rigidbot => {
 					"**Roles**: " + rolelist
 				].join("\n"),
 				title: "**Info: __" + member.user.username + "__**",
-				color: 0x990099
-			}).create();
+				color: config.color("info")
+			});
 			return true;
 		}
 	}));

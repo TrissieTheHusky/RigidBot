@@ -1,34 +1,29 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
-	const menus = rigidbot.menus;
 	const utils = rigidbot.utils;
 	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
-		name: "help",
+		name: "aliases",
 		usage: [
-			"help",
-			"help [command]"
+			"aliases",
+			"aliases [command]"
 		],
 		info: [
-			"Shows you information about a given command or a list of available commands and their descriptions."
+			"Shows you aliases of a given command or a list of all command aliases."
 		],
-		desc: "Shows a list of commands.",
+		desc: "Shows a list of aliases for commands.",
 		run: async e => {
 			if (e.args.length == 0) {
 				const items = [];
 				rigidbot.commands.forEach(cmd => {
 					if (!cmd.root || utils.rootUser(e.user)) {
-						items.push("**" + cmd.name + ": **" + cmd.desc);
+						items.push("**" + cmd.name + "**");
+						cmd.alias.forEach(alias => {
+							items.push(alias);
+						});
 					}
 				});
-				new menus.Items({
-					channel: e.channel, user: e.user
-				}, {
-					items: items, embed: {
-						color: config.color("info"),
-						title: "**Commands**"
-					}
-				}).create();
+				utils.sendBox(e.channel, "Aliases", config.color("info"), items.join(", "));
 			} else if (e.args.length == 1) {
 				const name = e.args[0];
 				var exists = false;
@@ -48,17 +43,12 @@ module.exports = rigidbot => {
 					});
 				}
 				if (cmd != null) {
-					if (cmd.info.length > 0) {
-						new menus.Pages({
-							channel: e.channel, user: e.user
-						}, {
-							pages: cmd.info, embed: {
-								color: config.color("info"),
-								title: "**Info: __" + name.toLowerCase() + "__**"
-							}
-						}).create();
+					if (cmd.alias.length > 0) {
+						const items = cmd.alias.slice();
+						items.unshift("**" + cmd.name + "**");
+						utils.sendBox(e.channel, "Aliases: __" + cmd.name + "__", config.color("info"), items.join(", "));
 					} else {
-						utils.sendErr(e.channel, "That command has no info pages.");
+						utils.sendErr(e.channel, "That command has no aliases.");
 					}
 				} else {
 					utils.sendErr(e.channel, "That command does not exist.");

@@ -1,8 +1,8 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
-	const helpers = rigidbot.helpers;
 	const users = rigidbot.configs.users;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "pay",
 		desc: "Pays an amount of coins to another user.",
@@ -19,52 +19,33 @@ module.exports = rigidbot => {
 				return false;
 			}
 			const id = e.user.id;
-			helpers.ensureUser(id);
+			users.user(id);
 			var balance = users.get(id, "balance");
-			const user = helpers.toUser(e.args[0]);
+			const user = utils.toUser(e.args[0]);
 			if (user == null || user == undefined) {
-				new utils.Message({
-					channel: e.channel,
-					user: e.user
-				}, "Cannot pay an unknown user.").create();
+				utils.sendErr(e.channel, "Cannot pay an unknown user.");
 				return true;
 			}
 			if (id == user.id) {
-				new utils.Message({
-					channel: e.channel,
-					user: e.user
-				}, "You may not pay yourself.").create();
+				utils.sendErr(e.channel, "You may not pay yourself.");
 				return true;
 			}
-			helpers.ensureUser(user.id);
+			users.user(user.id);
 			var other = users.get(user.id, "balance");
 			const payment = +e.args[1];
 			if (isNaN(payment) || payment <= 0 || payment == Infinity) {
-				new utils.Message({
-					channel: e.channel,
-					user: e.user
-				}, "That is an invalid amount of coins.").create();
+				utils.sendErr(e.channel, "That is an invalid amount of coins.");
 				return true;
 			}
 			if (payment > balance) {
-				new utils.Message({
-					channel: e.channel,
-					user: e.user
-				}, "You do not have enough coins to do this.").create();
+				utils.sendErr(e.channel, "You have an insufficient amount of coins.");
 				return true;
 			}
 			balance -= payment;
 			other += payment;
 			users.set(id, "balance", balance);
 			users.set(user.id, "balance", other);
-			new utils.Embedded({
-				channel: e.channel,
-				user: e.user
-			}, {
-				title: "**Exchange: __" + user.username + "__**",
-				color: 0x880000,
-				desc: "You have successfully payed **" + payment + "** coins to **" + user.username + "**!"
-			}).create();
+			utils.sendBox(e.channel, "Exchange: __" + user.username + "__", config.color("done"), "You have successfully payed **" + payment + "** coins to **" + user.username + "**!");
 			return true;
 		}
 	}));

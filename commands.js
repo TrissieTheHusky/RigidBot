@@ -2,10 +2,12 @@ module.exports = rigidbot => {
 	rigidbot.commands = [];
 	const list = [
 		"help",
+		"aliases",
 		"eval",
 		"support",
 		"version",
 		"changelog",
+		"devlog",
 		"config",
 		"role",
 		"ping",

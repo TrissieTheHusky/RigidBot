@@ -1,8 +1,8 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
-	const helpers = rigidbot.helpers;
 	const users = rigidbot.configs.users;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "balance",
 		desc: "Shows the amount of coins that you or someone else currently has.",
@@ -19,38 +19,22 @@ module.exports = rigidbot => {
 			if (e.args.length > 1) {
 				return false;
 			}
+			const ch = e.channel;
 			if (e.args.length == 0) {
 				const id = e.user.id;
-				helpers.ensureUser(id);
+				users.user(id);
 				const balance = users.get(id, "balance");
-				new utils.Embedded({
-					channel: e.channel,
-					user: e.user
-				}, {
-					title: "**Balance: __" + e.user.username + "__**",
-					color: 0x00FFFF,
-					desc: "Your balance is **" + balance + "**."
-				}).create();
+				utils.sendBox(ch, "**Balance: __" + e.user.username + "__**", config.color("stat"), "Your balance is **" + balance + "**.");
 			} else {
-				const user = helpers.toUser(e.args[0]);
+				const user = utils.toUser(e.args[0]);
 				if (user == null || user == undefined) {
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "Cannot get the balance of an unknown user.").create();
+					utils.sendErr(ch, "Cannot get the balance of an unknown user.");
 					return true;
 				}
 				const id = user.id;
-				helpers.ensureUser(id);
+				users.user(id);
 				const balance = users.get(id, "balance");
-				new utils.Embedded({
-					channel: e.channel,
-					user: e.user
-				}, {
-					title: "**Balance: __" + user.username + "__**",
-					color: 0x009999,
-					desc: "That user's balance is **" + balance + "**."
-				}).create();
+				utils.sendBox(ch, "**Balance: __" + user.username + "__**",  config.color("stat"), "That user's balance is **" + balance + "**.");
 			}
 			return true;
 		}

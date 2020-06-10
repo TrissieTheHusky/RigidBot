@@ -11,8 +11,8 @@ const bot = new (require("discord.js").Client)({
 const rigidbot = {bot};
 
 require("./configs.js")(rigidbot);
-require("./helpers.js")(rigidbot);
 require("./utils.js")(rigidbot);
+require("./menus.js")(rigidbot);
 require("./commands.js")(rigidbot);
 require("./events.js")(rigidbot);
 

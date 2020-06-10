@@ -1,6 +1,7 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
-	const utils = rigidbot.utils;
+	const menus = rigidbot.menus;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "support",
 		desc: "Gives instructions on how to request support for the bot.",
@@ -15,17 +16,17 @@ module.exports = rigidbot => {
 			if (e.args.length != 0) {
 				return false;
 			}
-			new utils.Pages({
+			new menus.Pages({
 				channel: e.channel,
 				user: e.user
 			}, {
 				pages: [
-					"Join the support discord at https://discord.gg/MbX6VMA to ask questions, request help, or give feedback on the bot.",
-					"A list of possible commands you are able to use can be found by using the command `help`.",
-					"The developer of RigidBot is `Rigidity#8021`. If you have suggestions or would like to request a feature or change, please ask either in a direct message, or in the RigidNetwork guild."
+					"Join the [support discord](https://discord.gg/MbX6VMA) to ask questions, request help, or give feedback on the bot.",
+					"A list of possible commands you are able to use can be found by using the **help** command.",
+					"The developer of RigidBot is **Rigidity#8021**. If you have suggestions or would like to request a feature or change, please ask either in a direct message, or in the RigidNetwork guild."
 				],
 				embed: {
-					color: 0x990000,
+					color: config.color("info"),
 					title: "**Support**"
 				}
 			}).create();

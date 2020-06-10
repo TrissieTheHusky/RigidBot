@@ -1,6 +1,7 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "coin",
 		alias: ["coin", "flip", "cf"],
@@ -12,10 +13,7 @@ module.exports = rigidbot => {
 			if (e.args.length != 0) {
 				return false;
 			}
-			new utils.Message({
-				channel: e.channel,
-				user: e.user
-			}, "The coin landed on **" + (Math.random() >= 0.5 ? "heads" : "tails") + "**.").create();
+			utils.sendBox(e.channel, "**Coin Flip**", config.color("done"), "The result is **" + (Math.random() >= 0.5 ? "heads" : "tails") + "**.");
 			return true;
 		}
 	}));

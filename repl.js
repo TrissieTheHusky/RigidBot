@@ -5,7 +5,7 @@ class Context {
 		this.rb = rigidbot;
 	}
 	run(text) {
-		const items = text.split(" ");
+		const items = text.split(/ +/);
 		const name = items[0];
 		const args = items.slice(1);
 		const rb = this.rb;

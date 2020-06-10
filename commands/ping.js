@@ -1,6 +1,7 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "ping",
 		desc: "Displays the latency of the bot and api.",
@@ -18,15 +19,7 @@ module.exports = rigidbot => {
 			}
 			const bot = Date.now() - e.msg.createdTimestamp;
 			const api = rigidbot.bot.ws.ping;
-			new utils.Embedded({
-				channel: e.channel,
-				user: e.user
-			}, {
-				title: "**Bot Latency**",
-				color: 0x99FF00,
-				desc: "Bot: " + bot + "\n"
-					+ "API: " + api
-			}).create();
+			utils.sendBox(e.channel, "Bot Latency", config.color("stat"), "Bot: " + bot + "\nAPI: " + api);
 			return true;
 		}
 	}));

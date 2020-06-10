@@ -23,26 +23,17 @@ module.exports = rigidbot => {
 							const current = Math.min(amount, 100);
 							amount -= current;
 							try {
-							await e.channel.bulkDelete(current);
+								await e.channel.bulkDelete(current);
 							} catch(err) {
-								new utils.Message({
-									channel: e.channel,
-									user: e.user
-								}, "Can only delete messages less than 2 weeks old and the bot requires the permission to do so.").create();
+								utils.sendErr(e.channel, "Can only delete messages less than 2 weeks old and the bot requires the permission to do so.");
 								break;
 							}
 						}
 					} else {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You cannot clear less than 2 messages.").create();
+						utils.sendErr(e.channel, "You cannot clear less than 2 messages.");
 					}
 				} else {
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "The amount provided was in an invalid format.").create();
+					utils.sendErr(e.channel, "The amount provided was in an invalid format.");
 				}
 			} else {
 				return false;

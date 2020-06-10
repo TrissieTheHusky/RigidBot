@@ -8,6 +8,6 @@ module.exports = rigidbot => {
 		"logs"
 	];
 	list.forEach(name => {
-		cfg[name] = new Config("./configs/" + name + ".json");
+		cfg[name] = new (require("./configs/" + name + ".js")(rigidbot))();
 	});
 }

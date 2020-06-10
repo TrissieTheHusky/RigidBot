@@ -1,11 +1,16 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
-	const utils = rigidbot.utils;
+	const menus = rigidbot.menus;
 	const bot = rigidbot.bot;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "stats",
 		desc: "Displays statistics about the bot.",
-		alias: ["statistics"],
+		alias: [
+			"statistics",
+			"stat",
+			"statistic"
+		],
 		usage: [
 			"stats"
 		],
@@ -19,7 +24,7 @@ module.exports = rigidbot => {
 			const guilds = bot.guilds.cache;
 			const channels = bot.channels.cache;
 			const users = bot.users.cache;
-			new utils.Items({
+			new menus.Items({
 				channel: e.channel,
 				user: e.user
 			}, {
@@ -30,7 +35,7 @@ module.exports = rigidbot => {
 				],
 				embed: {
 					title: "**Bot Statistics**",
-					color: 0xFF8800
+					color: config.color("stat")
 				}
 			}).create();
 			return true;

@@ -1,9 +1,8 @@
 const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
-	const bot = rigidbot.bot;
 	const guilds = rigidbot.configs.guilds;
-	const helpers = rigidbot.helpers;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "config",
 		usage: [
@@ -33,151 +32,91 @@ module.exports = rigidbot => {
 			const args = e.args;
 			if (args.length > 0) {
 				if (args.length == 1 && args[0] == "prefix") {
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "This guild's prefix is " + guilds.get(e.guild.id, "symbol")).create();
+					utils.sendBox(e.channel, "Guild Prefix", config.color("stat"), "This guild's prefix is " + guilds.get(e.guild.id, "symbol"));
 					return true;
-				} else if (args.length == 2 && args[1] == "prefix") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's prefix.").create();
+				} else if (args.length == 2 && args[0] == "prefix") {
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's prefix.");
 						return true;
 					}
 					const text = args[1]
 					guilds.set(e.guild.id, "symbol", text);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "This guild's prefix is now " + text).create();
+					utils.sendBox(e.channel, "Guild Prefix", config.color("done"), "This guild's prefix is now " + text);
 					return true;
 				} else if (args.length == 1 && args[0] == "join") {
 					const msg = guilds.get(e.guild.id, "messages", "join");
 					if (msg == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild's join message has not been set.").create();
+						utils.sendErr(e.channel, "This guild's join message has not been set.");
 					} else {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, msg).create();
+						utils.sendBox(e.channel, "Join Message", config.color("stat"), msg);
 					}
 					return true;
 				} else if (args.length == 1 && args[0] == "leave") {
 					const msg = guilds.get(e.guild.id, "messages", "leave");
 					if (msg == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild's leave message has not been set.").create();
+						utils.sendErr(e.channel, "This guild's leave message has not been set.");
 					} else {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, msg).create();
+						utils.sendBox(e.channel, "Leave Message", config.color("stat"), msg);
 					}
 					return true;
 				} else if (args.length > 1 && args[0] == "join") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's join message.").create();
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's join message.");
 						return true;
 					}
 					const text = args.slice(1).join(" ");
 					guilds.set(e.guild.id, "messages", "join", text);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "This guild's join message has been set.").create();
+					utils.sendBox(e.channel, "Join Message", config.color("done"), text);
 					return true;
 				} else if (args.length > 1 && args[0] == "leave") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's leave message.").create();
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's leave message.");
 						return true;
 					}
 					const text = args.slice(1).join(" ");
 					guilds.set(e.guild.id, "messages", "leave", text);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "This guild's leave message has been set.").create();
+					utils.sendBox(e.channel, "Leave Message", config.color("done"), text);
 					return true;
 				} else if (args.length == 1 && args[0] == "channel") {
 					const channel = guilds.get(e.guild.id, "message-channel");
 					if (channel == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild's message channel has not been set.").create();
+						utils.sendErr(e.channel, "This guild's message channel has not been set.");
 					} else {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild's message channel is <#" + channel + ">").create();
+						utils.sendBox(e.channel, "Message Channel", config.color("stat"), "This guild's message channel is <#" + channel + ">");
 					}
 					return true;
 				} else if (args.length == 2 && args[0] == "channel") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's message channel.").create();
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's message channel.");
 						return true;
 					}
 					const text = args[1];
-					const channel = helpers.toChannel(text);
+					const channel = utils.toChannel(text);
 					guilds.set(e.guild.id, "message-channel", channel.id);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "This guild's message channel has been set to <#" + channel.id + ">").create();
+					utils.sendBox(e.channel, "Message Channel", config.color("done"), "This guild's message channel has been set to <#" + channel.id + ">");
 					return true;
 				} else if (args.length == 1 && args[0] == "polls") {
 					const channel = guilds.get(e.guild.id, "poll-channel");
 					if (channel == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild's poll channel has not been set.").create();
+						utils.sendErr(e.channel, "This guild's poll channel has not been set.");
 					} else {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild's poll channel is <#" + channel + ">").create();
+						utils.sendBox(e.channel, "Poll Channel", config.color("stat"), "This guild's poll channel is <#" + channel + ">");
 					}
 					return true;
 				} else if (args.length == 2 && args[0] == "polls") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's poll channel.").create();
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's poll channel.");
 						return true;
 					}
 					const text = args[1];
-					const channel = helpers.toChannel(text);
+					const channel = utils.toChannel(text);
 					guilds.set(e.guild.id, "poll-channel", channel.id);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "This guild's poll channel has been set to <#" + channel.id + ">").create();
+					utils.sendBox(e.channel, "Poll Channel", config.color("done"), "This guild's poll channel has been set to <#" + channel.id + ">");
 					return true;
 				} else if (args.length == 2 && args[0] == "auto" && args[1] == "user") {
 					const roles = guilds.get(e.guild.id, "autoroles", "user");
 					if (!roles.length) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild has no automatic user roles.").create();
+						utils.sendErr(e.channel, "This guild has no automatic user roles.");
 						return true;
 					}
 					const arr = [];
@@ -185,22 +124,12 @@ module.exports = rigidbot => {
 						arr.push("<@&" + role + ">");
 					});
 					const text = arr.join(" ");
-					new utils.Embedded({
-						channel: e.channel,
-						user: e.user
-					}, {
-						title: "**User Roles**",
-						color: 0x00AA00,
-						desc: text
-					}).create();
+					utils.sendBox(e.channel, "User Roles", config.color("stat"), text);
 					return true;
 				} else if (args.length == 2 && args[0] == "auto" && args[1] == "bot") {
 					const roles = guilds.get(e.guild.id, "autoroles", "bot");
 					if (!roles.length) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild has no automatic bot roles.").create();
+						utils.sendErr(e.channel, "This guild has no automatic bot roles.");
 						return true;
 					}
 					const arr = [];
@@ -208,86 +137,52 @@ module.exports = rigidbot => {
 						arr.push("<@&" + role + ">");
 					});
 					const text = arr.join(" ");
-					new utils.Embedded({
-						channel: e.channel,
-						user: e.user
-					}, {
-						title: "**Bot Roles**",
-						color: 0x00AA00,
-						desc: text
-					}).create();
+					utils.sendBox(e.channel, "Bot Roles", config.color("stat"), text);
 					return true;
 				} else if (args.length == 3 && args[0] == "auto" && args[1] == "user") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's automatic user roles.").create();
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's automatic user roles.");
 						return true;
 					}
-					const role = helpers.toRole(args[2], e.guild);
+					const role = utils.toRole(args[2], e.guild);
 					if (role == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role does not exist.").create();
+						utils.sendErr(e.channel, "That role does not exist.");
 						return true;
 					}
 					const roles = guilds.get(e.guild.id, "autoroles", "user");
 					const id = role.id;
 					if (roles.indexOf(id) != -1) {
 						roles.splice(roles.indexOf(id), 1);
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role is no longer an automatic user role.").create();
+						utils.sendBox(e.channel, "User Roles", config.color("done"), "That role is no longer an automatic user role.");
 					} else {
 						roles.push(id);
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role is now an automatic user role.").create();
+						utils.sendBox(e.channel, "User Roles", config.color("done"), "That role is now an automatic user role.");
 					}
 					return true;
 				} else if (args.length == 3 && args[0] == "auto" && args[1] == "bot") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's automatic bot roles.").create();
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's automatic bot roles.");
 						return true;
 					}
-					const role = helpers.toRole(args[2], e.guild);
+					const role = utils.toRole(args[2], e.guild);
 					if (role == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role does not exist.").create();
+						utils.sendErr(e.channel, "That role does not exist.");
 						return true;
 					}
 					const roles = guilds.get(e.guild.id, "autoroles", "bot");
 					const id = role.id;
 					if (roles.indexOf(id) != -1) {
 						roles.splice(roles.indexOf(id), 1);
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role is no longer an automatic bot role.").create();
+						utils.sendBox(e.channel, "Bot Roles", config.color("done"), "That role is no longer an automatic bot role.");
 					} else {
 						roles.push(id);
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role is now an automatic bot role.").create();
+						utils.sendBox(e.channel, "User Roles", config.color("done"), "That role is now an automatic bot role.");
 					}
 					return true;
 				} else if (args.length == 1 && args[0] == "role") {
 					const roles = guilds.get(e.guild.id, "freeroles");
 					if (!roles.length) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild has no free roles.").create();
+						utils.sendErr(e.channel, "This guild has no free roles.");
 						return true;
 					}
 					const arr = [];
@@ -295,22 +190,12 @@ module.exports = rigidbot => {
 						arr.push("<@&" + role + ">");
 					});
 					const text = arr.join(" ");
-					new utils.Embedded({
-						channel: e.channel,
-						user: e.user
-					}, {
-						title: "**Free Roles**",
-						color: 0x00FFFF,
-						desc: text
-					}).create();
+					utils.sendBox(e.channel, "Free Roles", config.color("stat"), text);
 					return true;
 				} else if (args.length == 1 && args[0] == "inspect") {
 					const data = guilds.data[e.guild.id].reactionroles;
 					if (!Object.keys(data).length) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This guild has no role channels.").create();
+						utils.sendErr(e.channel, "This guild has no role channels.");
 						return true;
 					}
 					const items = [];
@@ -318,38 +203,22 @@ module.exports = rigidbot => {
 						items.push("<#" + item + ">");
 					});
 					const text = items.join(" ");
-					new utils.Embedded({
-						channel: e.channel,
-						user: e.user
-					}, {
-						title: "**Role Channels**",
-						color: 0xFF33AA,
-						desc: text
-					}).create();
+					utils.sendBox(e.channel, "Role Channels", config.color("stat"), text);
 					return true;
 				} else if (args.length == 2 && args[0] == "inspect") {
-					const channel = helpers.toChannel(args[1]);
+					const channel = utils.toChannel(args[1]);
 					if (channel == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That channel does not exist.").create();
+						utils.sendErr(e.channel, "That channel does not exist.");
 						return true;
 					}
 					var data = guilds.data[e.guild.id].reactionroles;
 					if (!(channel.id in data)) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That channel is not a role channel.").create();
+						utils.sendErr(e.channel, "That channel is not a role channel.");
 						return true;
 					}
 					data = data[channel.id];
 					if (!Object.keys(data).length) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This channel has no role messages.").create();
+						utils.sendErr(e.channel, "This channel has no role messages.");
 						return true;
 					}
 					const items = [];
@@ -358,47 +227,28 @@ module.exports = rigidbot => {
 						items.push("**[message](" + ref + ")** roles: " + val.length);
 					}
 					const text = items.join("\n");
-					new utils.Embedded({
-						channel: e.channel,
-						user: e.user
-					}, {
-						title: "**Role Messages**",
-						color: 0xFF33AA,
-						desc: text
-					}).create();
+					utils.sendBox(e.channel, "Role Messages", config.color("stat"), text);
 					return true;
 				} else if (args.length == 3 && args[0] == "inspect") {
-					const channel = helpers.toChannel(args[1]);
+					const channel = utils.toChannel(args[1]);
 					if (channel == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That channel does not exist.").create();
+						utils.sendErr(e.channel, "That channel does not exist.");
 						return true;
 					}
 					var data = guilds.data[e.guild.id].reactionroles;
 					if (!(channel.id in data)) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That channel is not a role channel.").create();
+						utils.sendErr(e.channel, "That channel is not a role channel.");
 						return true;
 					}
 					data = data[channel.id];
 					const mid = args[2];
 					if (!(mid in data)) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That message is not a role message.").create();
+						utils.sendErr("That message is not a role message.");
 						return true;
 					}
 					data = data[mid];
 					if (!data.length) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "This message has no reaction roles.").create();
+						utils.sendErr(e.channel, "This message has no reaction roles.");
 						return true;
 					}
 					const items = [];
@@ -406,62 +256,40 @@ module.exports = rigidbot => {
 						items.push(item.emoji + " <@&" + item.role + ">");
 					});
 					const text = items.join("\n");
-					new utils.Embedded({
-						channel: e.channel,
-						user: e.user
-					}, {
-						title: "**Reaction Roles**",
-						color: 0xFF33AA,
-						desc: text
-					}).create();
+					utils.sendBox(e.channel, "Reaction Roles", config.color("stat"), text);
 					return true;
 				} else if (args.length == 5 && args[0] == "role") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's free roles.").create();
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's free roles.");
 						return true;
 					}
-					const role = helpers.toRole(args[1], e.guild);
+					const role = utils.toRole(args[1], e.guild);
 					if (role == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role does not exist.").create();
+						utils.sendErr("That role does not exist.");
 						return true;
 					}
 					const chantext = args[2];
 					const msgid = args[3];
 					const emoji = args[4];
-					const channel = helpers.toChannel(chantext);
+					const channel = utils.toChannel(chantext);
 					const chanid = channel.id;
 					if (channel == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That channel does not exist.").create();
+						utils.sendErr(e.channel, "That channel does not exist.");
 						return true;
 					}
 					const msg = await channel.messages.fetch(msgid);
 					if (msg == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That message does not exist.").create();
+						utils.sendErr(e.channel, "That message does not exist.");
 						return true;
 					}
-					helpers.ensureReactionRoles(e.guild.id, chanid, msgid);
+					guilds.reactRoles(e.guild.id, chanid, msgid);
 					const pairs = guilds.get(e.guild.id, "reactionroles", chanid, msgid);
 					const index = pairs.findIndex(item => item.emoji == emoji && item.role == role.id);
 					if (index == -1) {
 						pairs.push({
 							emoji, role: role.id
 						});
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role is now a reaction role.").create();
+						utils.sendBox(e.channel, "Reaction Roles", config.color("done"), "That role is now a reaction role.");
 					} else {
 						pairs.splice(index, 1);
 						if (!pairs.length) {
@@ -470,42 +298,27 @@ module.exports = rigidbot => {
 						if (!Object.keys(guilds.get(e.guild.id, "reactionroles", chanid)).length) {
 							guilds.delete(e.guild.id, "reactionroles", chanid);
 						}
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role is no longer a reaction role.").create();
+						utils.sendBox(e.channel, "Reaction Roles", config.color("done"), "That role is no longer a reaction role.");
 					}
 					return true;
 				} else if (args.length == 2 && args[0] == "role") {
-					if (!helpers.hasPerm(e.member, "MANAGE_GUILD")) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "You do not have permission to set the guild's free roles.").create();
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's free roles.");
 						return true;
 					}
-					const role = helpers.toRole(args[1], e.guild);
+					const role = utils.toRole(args[1], e.guild);
 					if (role == null) {
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role does not exist.").create();
+						utils.sendErr(e.channel, "That role does not exist.");
 						return true;
 					}
 					const roles = guilds.get(e.guild.id, "freeroles");
 					const id = role.id;
 					if (roles.indexOf(id) != -1) {
 						roles.splice(roles.indexOf(id), 1);
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role is no longer a free role.").create();
+						utils.sendBox(e.channel, "Free Roles", config.color("done"), "That role is no longer a free role.");
 					} else {
 						roles.push(id);
-						new utils.Message({
-							channel: e.channel,
-							user: e.user
-						}, "That role is now a free role.").create();
+						utils.sendBox(e.channel, "Free Roles", config.color("done"), "That role is now a free role.");
 					}
 					return true;
 				}

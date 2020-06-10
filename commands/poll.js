@@ -2,7 +2,6 @@ const Command = require("../command.js");
 module.exports = rigidbot => {
 	const bot = rigidbot.bot;
 	const utils = rigidbot.utils;
-	const helpers = rigidbot.helpers;
 	const guilds = rigidbot.configs.guilds;
 	rigidbot.commands.push(new Command({
 		name: "poll",
@@ -37,27 +36,23 @@ module.exports = rigidbot => {
 			});
 			const channelid = guilds.get(e.guild.id, "poll-channel");
 			if (channelid == null) {
-				new utils.Message({
-					channel: e.channel,
-					user: e.user
-				}, "This guild does not have a poll channel set.").create();
+				utils.sendErr(e.channel, "This guild does not have a poll channel set.");
 				return true;
 			}
 			const channel = bot.channels.cache.get(channelid);
 			if (channel == null) {
-				new utils.Message({
-					channel: e.channel,
-					user: e.user
-				}, "That channel does not exist.").create();
+				utils.sendErr(e.channel, "That channel does not exist.");
 				return true;
 			}
 			const poll = {
 				title, options,
 				user: e.user.id
 			};
-			const pollmessage = await channel.send(helpers.pollEmbed(e.user, poll));
+			const pollmessage = await channel.send({
+				embed: utils.pollEmbed(e.user, poll)
+			});
 			Object.keys(options).forEach(async emoji => {
-				await pollmessage.react(helpers.toEmoji(emoji, e.guild));
+				await pollmessage.react(utils.toEmoji(emoji, e.guild));
 			});
 			guilds.set(e.guild.id, "polls", channelid, pollmessage.id, poll);
 			return true;

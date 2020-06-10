@@ -2,7 +2,7 @@ const Command = require("../command.js");
 module.exports = rigidbot => {
 	const utils = rigidbot.utils;
 	const guilds = rigidbot.configs.guilds;
-	const helpers = rigidbot.helpers;
+	const config = rigidbot.configs.config;
 	rigidbot.commands.push(new Command({
 		name: "role",
 		desc: "Toggles whether or not you have one of the guild's free roles.",
@@ -23,10 +23,7 @@ module.exports = rigidbot => {
 			if (e.args.length == 0) {
 				const roles = guilds.get(e.guild.id, "freeroles");
 				if (!roles.length) {
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "This guild has no free roles.").create();
+					utils.sendErr(e.channel, "This guild has no free roles.");
 					return true;
 				}
 				const arr = [];
@@ -34,22 +31,12 @@ module.exports = rigidbot => {
 					arr.push("<@&" + role + ">");
 				});
 				const text = arr.join(" ");
-				new utils.Embedded({
-					channel: e.channel,
-					user: e.user
-				}, {
-					title: "**Free Roles**",
-					color: 0x00FFFF,
-					desc: text
-				}).create();
+				utils.sendBox(e.channel, "Free Roles", config.color("stat"), text);
 				return true;
 			} else if (e.args.length == 1) {
-				const role = helpers.toRole(e.args[0], e.guild);
+				const role = utils.toRole(e.args[0], e.guild);
 				if (role == null) {
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "That is an unknown role.").create();
+					utils.sendErr(e.channel, "That is an unknown role.");
 					return true;
 				}
 				const roles = guilds.get(e.guild.id, "freeroles");
@@ -60,26 +47,17 @@ module.exports = rigidbot => {
 					}
 				});
 				if (!free) {
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "That is not a free role.").create();
+					utils.sendErr(e.channel, "That is not a free role.");
 					return true;
 				}
 				const member = e.member;
 				const exists = member.roles.cache.has(role.id);
 				if (exists) {
 					member.roles.remove(role);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "Removed the free role from yoursef.").create();
+					utils.sendBox(e.channel, "Free Roles", config.color("done"), "Removed the free role from yoursef.");
 				} else {
 					member.roles.add(role);
-					new utils.Message({
-						channel: e.channel,
-						user: e.user
-					}, "Added the free role to yourself.").create();
+					utils.sendBox(e.channel, "Free Roles", config.color("done"), "Added the free role to yoursef.");
 				}
 				return true;
 			}
