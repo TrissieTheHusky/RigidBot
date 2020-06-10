@@ -21,15 +21,14 @@ module.exports = rigidbot => {
 			}
 			const originalStatus = member.presence.status;
 			var status;
-			if (originalStatus == "online") {
+			if (originalStatus == "online")
 				status = "Online";
-			} else if (originalStatus == "offline") {
+			else if (originalStatus == "offline")
 				status = "Offline";
-			} else if (originalStatus == "dnd") {
+			else if (originalStatus == "dnd")
 				status = "Do Not Disturb";
-			} else if (originalStatus == "idle") {
+			else if (originalStatus == "idle")
 				status = "Idle";
-			}
 			var rolelist = [];
 			member.roles.cache.array().forEach(role => {
 				if (role.id == e.guild.roles.everyone.id) {
