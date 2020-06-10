@@ -1,6 +1,6 @@
 module.exports = rigidbot => {
 
-	rigidbot.items.wood = {
+	rigidbot.items[1] = {
 		name: "Wood", space: 1,
 		emoji: "<:wood:720351649842856016>",
 		rarity: 1, id: 1, type: "Resource",
