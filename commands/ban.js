@@ -16,11 +16,9 @@ module.exports = rigidbot => {
 			"The optional reason given for banning the user will be sent to them upon being banned, as well as displayed in the audit log."
 		],
 		run: async e => {
-			if (e.args.length == 0) {
-				return false;
-			}
+			if (e.args.length == 0) return false;
 			const user = utils.toMember(e.args[0], e.guild);
-			const reason = e.args.length > 1 ? e.args.slice(1).join(" ") : "An unknown reason";
+			const reason = e.args.length > 1 ? e.args.slice(1).join(" ") : "";
 			if (user != null) {
 				if (user.bannable) {
 					await user.send("You have been banned from **" + e.guild.name + "** for _" + reason + "_.").catch(err => {});
@@ -30,9 +28,8 @@ module.exports = rigidbot => {
 				} else {
 					utils.sendErr(e.channel, "That user could not be banned.");
 				}
-			} else {
+			} else
 				utils.sendErr(e.channel, "That user could not be found.");
-			}
 			return true;
 		}
 	}));
