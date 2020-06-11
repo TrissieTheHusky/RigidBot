@@ -19,9 +19,8 @@ module.exports = rigidbot => {
 				user: e.user
 			}, {
 				pages: [
-					"Join the [support discord](https://discord.gg/MbX6VMA) to ask questions, request help, or give feedback on the bot.",
-					"A list of possible commands you are able to use can be found by using the **help** command.",
-					"The developer of RigidBot is **Rigidity#8021**. If you have suggestions or would like to request a feature or change, please ask either in a direct message, or in the RigidNetwork guild."
+					"Join the [support discord](https://discord.gg/RYc9YRZ) to ask questions, request help, or give feedback on the bot.",
+					"A list of possible commands you are able to use can be found by using the **help** command."
 				],
 				embed: {
 					color: config.color("info"),

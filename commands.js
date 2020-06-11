@@ -20,6 +20,8 @@ module.exports = rigidbot => {
 		"unban",
 		"info",
 		"poll",
+		"backpack",
+		"experience",
 		"balance",
 		"pay",
 		"dice",

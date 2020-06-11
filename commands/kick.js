@@ -16,9 +16,7 @@ module.exports = rigidbot => {
 			"The optional reason given for kicking the user will be sent to them upon being kicked, as well as displayed in the audit log."
 		],
 		run: async e => {
-			if (e.args.length == 0) {
-				return false;
-			}
+			if (!e.args.length) return false;
 			const user = utils.toMember(e.args[0], e.guild);
 			const reason = e.args.length > 1 ? e.args.slice(1).join(" ") : "";
 			if (user != null) {

@@ -5,9 +5,7 @@ module.exports = rigidbot => {
 	];
 
 	rigidbot.items = {};
-
-	require("./item.js")(rigidbot);
-
+	
 	items.forEach(name => {
 		require("./items/" + name + ".js")(rigidbot);
 	});
