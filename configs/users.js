@@ -26,6 +26,8 @@ module.exports = rigidbot => {
 			super("./configs/data/users.json");
 		}
 		user(id) {
+			this.create(id, "xp", 0);
+			this.create(id, "level", 1);
 			this.create(id, "balance", 0);
 			this.create(id, "backpack", "space", 64);
 			this.create(id, "backpack", "items", []);

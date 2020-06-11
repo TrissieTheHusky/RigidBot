@@ -2,6 +2,10 @@ module.exports = rigidbot => {
 	
 	const utils = rigidbot.utils;
 	
+	utils.levelGoal = lvl => {
+		return lvl * lvl * 3 + 22
+	};
+	
 	utils.pollEmbed = (user, poll) => {
 		const menus = rigidbot.utils;
 		const lines = [];

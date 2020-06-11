@@ -21,6 +21,7 @@ module.exports = rigidbot => {
 		"info",
 		"poll",
 		"backpack",
+		"experience",
 		"balance",
 		"pay",
 		"dice",
