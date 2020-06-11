@@ -10,10 +10,8 @@ module.exports = rigidbot => {
 			"coinflip"
 		],
 		run: async e => {
-			if (e.args.length != 0) {
-				return false;
-			}
-			utils.sendBox(e.channel, "Coin Flip", config.color("done"), "The result is **" + (Math.random() >= 0.5 ? "heads" : "tails") + "**.");
+			if (e.args.length != 0) return false;
+			utils.sendBox(e.channel, "**Coin Flip**", config.color("done"), "The result is **" + (Math.random() >= 0.5 ? "heads" : "tails") + "**.");
 			return true;
 		}
 	}));

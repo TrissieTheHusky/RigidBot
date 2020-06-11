@@ -16,9 +16,7 @@ module.exports = rigidbot => {
 		],
 		desc: "Shows the versions of the bot and the changes made along the way.",
 		run: e => {
-			if (e.args.length) {
-				return false;
-			}
+			if (e.args.length) return false;
 			const pages = [];
 			changelog.forEach(item => {
 				var text = "__" + item.name + "__: **" + item.version + "**";

@@ -13,9 +13,7 @@ module.exports = rigidbot => {
 		],
 		alias: ["credit", "credits"],
 		run: async e => {
-			if (e.args.length != 0) {
-				return false;
-			}
+			if (e.args.length != 0) return false;
 			new menus.Pages({
 				channel: e.channel,
 				user: e.user

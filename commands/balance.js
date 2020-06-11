@@ -16,9 +16,8 @@ module.exports = rigidbot => {
 			"You can use the bot's coins to pay other users. Coins will be given to you for a variety of reasons, including but not limited to activity, large guild ownership, and usage of the bot."
 		],
 		run: async e => {
-			if (e.args.length > 1) {
+			if (e.args.length > 1)
 				return false;
-			}
 			const ch = e.channel;
 			if (e.args.length == 0) {
 				const id = e.user.id;
