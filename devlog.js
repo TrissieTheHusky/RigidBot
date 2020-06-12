@@ -2,6 +2,14 @@
 module.exports = [
 	
 	{
+		date: "6/11/2020",
+		author: "Rigidity",
+		log: [
+			"Just added a new item and experience system. There are four items. Currently there is wood, sand, rock, and brick. Each of these are randomly awarded upon leveling up.",
+			"To level up, you need enough experience. Experience can be gained by messaging frequently in bot accessible channels, but spamming won't give you xp any faster. There is a command to check your xp, and your backpack.",
+			"Now that the initial system for a lot of things is in place, development will slow a little bit to accomodate for other things I need to do, and I will be testing on a development bot so that data doesn't get corrupted and things don't go wrong. You can expect a small update at least every week."
+		]
+	}, {
 		date: "6/10/2020",
 		author: "Rigidity",
 		log: [

@@ -46,7 +46,7 @@ module.exports = rigidbot => {
 				other += payment;
 				users.set(id, "balance", balance);
 				users.set(user.id, "balance", other);
-				utils.sendBox(e.channel, "Exchange: __" + user.username + "__", config.color("done"), "You have successfully payed **" + payment + "** coins to **" + user.username + "**!");
+				utils.sendBox(e.channel, "Exchange: __" + user.username + "__", config.color("done"), "You have successfully paid **" + payment + "** coins to **" + user.username + "**!");
 			} else {
 				const id = e.user.id;
 				users.user(id);
@@ -90,7 +90,7 @@ module.exports = rigidbot => {
 				}
 				users.removeItem(id, data, quantity);
 				users.addItem(user.id, data, quantity);
-				utils.sendBox(e.channel, "Exchange: __" + user.username + "__", config.color("done"), "You have successfully payed **" + quantity + "x** " + res.emoji + " to **" + user.username + "**!");
+				utils.sendBox(e.channel, "Exchange: __" + user.username + "__", config.color("done"), "You have successfully paid **" + quantity + "x** " + res.emoji + " to **" + user.username + "**!");
 			}
 			return true;
 		}

@@ -10,10 +10,11 @@ class Context {
 		const args = items.slice(1);
 		const rb = this.rb;
 		if (name == "eval") {
-			try
+			try {
 				console.log(eval(args.join(" ")));
-			catch(e)
+			} catch(e) {
 				console.log(e);
+			}
 		}
 	}
 }

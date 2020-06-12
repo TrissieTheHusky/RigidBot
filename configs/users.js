@@ -21,13 +21,15 @@ Object.compare = function (obj1, obj2) {
 };
 
 module.exports = rigidbot => {
+
 	return class Users extends Config {
 		constructor() {
 			super("./configs/data/users.json");
 		}
 		user(id) {
 			this.create(id, "xp", 0);
-			this.create(id, "level", 1);
+			this.create(id, "level", 0);
+			this.create(id, "xp-time", -1);
 			this.create(id, "balance", 0);
 			this.create(id, "backpack", "space", 64);
 			this.create(id, "backpack", "items", []);
@@ -47,32 +49,19 @@ module.exports = rigidbot => {
 		spaceTaken(id) {
 			return this.totalSpace(id) - this.spaceLeft(id);
 		}
-		itemIndex(id, data) {
+		
+		addItem(id, data, quantity = data.quantity) {
 			this.user(id);
 			const items = this.get(id, "backpack", "items");
-			for (var i = 0; i < items.length; i++) {
-				if (items[i].id == data.id) {
-					return i;
-				}
-			}
-			return -1;
+			items.push({
+				...data, quantity
+			});
+			this.set(id, "backpack", "items", rigidbot.utils.collapseItems(items));
 		}
-		addItem(id, data, quantity) {
+		removeItem(id, data, quantity = data.quantity) {
 			this.user(id);
 			const items = this.get(id, "backpack", "items");
-			const index = this.itemIndex(id, data);
-			if (index == -1) {
-				items.push({
-					...data, quantity
-				});
-			} else {
-				items[index].quantity += quantity;
-			}
-		}
-		removeItem(id, data, quantity) {
-			this.user(id);
-			const items = this.get(id, "backpack", "items");
-			const index = this.itemIndex(id, data);
+			const index = rigidbot.utils.itemIndex(items, data);
 			if (index != -1) {
 				items[index].quantity -= quantity;
 				if (items[index].quantity <= 0) {
