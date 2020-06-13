@@ -9,6 +9,7 @@ module.exports = rigidbot => {
 			"help",
 			"help [command]"
 		],
+		immune: true,
 		info: [
 			"Shows you information about a given command or a list of available commands and their descriptions."
 		],

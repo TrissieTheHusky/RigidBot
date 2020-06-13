@@ -6,26 +6,30 @@ module.exports = rigidbot => {
 	rigidbot.commands.push(new Command({
 		name: "config",
 		usage: [
-			"config prefix",
-			"config prefix [text]",
-			"config join",
-			"config join [message]",
-			"config leave",
-			"config leave [message]",
-			"config channel",
-			"config channel [location]",
-			"config polls",
+			"config prefix [text...]",
+			"config join [message...]",
+			"config leave [message...]",
+			"config welcome [channel]",
 			"config polls [channel]",
-			"config auto user",
+			"config games [channel]",
+			"config role [role]",
+			"config role [role] [channel] [message] [emoji]",
 			"config auto user [role]",
-			"config auto bot",
 			"config auto bot [role]",
-			"config role [name]",
-			"config role [name] [channel] [message] [emoji]",
 			"config inspect",
 			"config inspect [channel]",
-			"config inspect [channel] [message]"
+			"config inspect [channel] [message]",
+			//"config mode channel [mode]",
+			"config mode command [mode]",
+			"config mode feature [mode]",
+			//"config whitelist channel [channel]",
+			"config whitelist command [command]",
+			"config whitelist feature [feature]",
+			//"config blacklist channel [channel]",
+			"config blacklist command [command]",
+			"config blacklist feature [feature]"
 		],
+		immune: true,
 		alias: ["cfg", "setup", "settings"],
 		desc: "Manages settings for guilds, channels, users, and more.",
 		info: [
@@ -67,36 +71,61 @@ module.exports = rigidbot => {
 						utils.sendErr(e.channel, "You do not have permission to set the guild's join message.");
 						return true;
 					}
-					const text = args.slice(1).join(" ");
+					const current = guilds.get(e.guild.id, "messages", "join");
+					var text = args.slice(1).join(" ");
+					if (text == current) {
+						text = null;
+					}
 					guilds.set(e.guild.id, "messages", "join", text);
-					utils.sendBox(e.channel, "Join Message", config.color("done"), text);
+					if (text == null) {
+						utils.sendBox(e.channel, "Message Removed", config.color("done"), "The join message has been removed from this guild.");
+					} else {
+						utils.sendBox(e.channel, "Join Message", config.color("done"), text);
+					}
 					return true;
 				} else if (args.length > 1 && args[0] == "leave") {
 					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
-						utils.sendErr(e.channel, "You do not have permission to set the guild's leave message.");
+						utils.sendErr(e.channel, "You do not have permission to set the guild's join message.");
 						return true;
 					}
-					const text = args.slice(1).join(" ");
+					const current = guilds.get(e.guild.id, "messages", "leave");
+					var text = args.slice(1).join(" ");
+					if (text == current) {
+						text = null;
+					}
 					guilds.set(e.guild.id, "messages", "leave", text);
-					utils.sendBox(e.channel, "Leave Message", config.color("done"), text);
-					return true;
-				} else if (args.length == 1 && args[0] == "channel") {
-					const channel = guilds.get(e.guild.id, "message-channel");
-					if (channel == null) {
-						utils.sendErr(e.channel, "This guild's message channel has not been set.");
+					if (text == null) {
+						utils.sendBox(e.channel, "Message Removed", config.color("done"), "The leave message has been removed from this guild.");
 					} else {
-						utils.sendBox(e.channel, "Message Channel", config.color("stat"), "This guild's message channel is <#" + channel + ">");
+						utils.sendBox(e.channel, "Leave Message", config.color("done"), text);
 					}
 					return true;
-				} else if (args.length == 2 && args[0] == "channel") {
+				} else if (args.length == 1 && args[0] == "welcome") {
+					const channel = guilds.get(e.guild.id, "message-channel");
+					if (channel == null) {
+						utils.sendErr(e.channel, "This guild's welcome channel has not been set.");
+					} else {
+						utils.sendBox(e.channel, "Welcome Channel", config.color("stat"), "This guild's welcome channel is <#" + channel + ">");
+					}
+					return true;
+				} else if (args.length == 2 && args[0] == "welcome") {
 					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
-						utils.sendErr(e.channel, "You do not have permission to set the guild's message channel.");
+						utils.sendErr(e.channel, "You do not have permission to set the guild's welcome channel.");
 						return true;
 					}
 					const text = args[1];
 					const channel = utils.toChannel(text);
-					guilds.set(e.guild.id, "message-channel", channel.id);
-					utils.sendBox(e.channel, "Message Channel", config.color("done"), "This guild's message channel has been set to <#" + channel.id + ">");
+					if (!channel) {
+						utils.sendErr(e.channel, "That is an invalid channel.");
+						return true;
+					}
+					if (guilds.get(e.guild.id, "message-channel") == null) {
+						guilds.set(e.guild.id, "message-channel", channel.id);
+						utils.sendBox(e.channel, "Welcome Channel", config.color("done"), "This guild's welcome channel has been set to <#" + channel.id + ">");
+					} else {
+						guilds.set(e.guild.id, "message-channel", null);
+						utils.sendBox(e.channel, "Welcome Channel", config.color("done"), "This guild's welcome channel has been unset.");
+					}
 					return true;
 				} else if (args.length == 1 && args[0] == "polls") {
 					const channel = guilds.get(e.guild.id, "poll-channel");
@@ -113,8 +142,44 @@ module.exports = rigidbot => {
 					}
 					const text = args[1];
 					const channel = utils.toChannel(text);
-					guilds.set(e.guild.id, "poll-channel", channel.id);
-					utils.sendBox(e.channel, "Poll Channel", config.color("done"), "This guild's poll channel has been set to <#" + channel.id + ">");
+					if (!channel) {
+						utils.sendErr(e.channel, "That is an invalid channel.");
+						return true;
+					}
+					if (guilds.get(e.guild.id, "poll-channel") == null) {
+						guilds.set(e.guild.id, "poll-channel", channel.id);
+						utils.sendBox(e.channel, "Poll Channel", config.color("done"), "This guild's poll channel has been set to <#" + channel.id + ">");
+					} else {
+						guilds.set(e.guild.id, "poll-channel", null);
+						utils.sendBox(e.channel, "Poll Channel", config.color("done"), "This guild's poll channel has been unset.");
+					}
+					return true;
+				} else if (args.length == 1 && args[0] == "games") {
+					const channel = guilds.get(e.guild.id, "game-channel");
+					if (channel == null) {
+						utils.sendErr(e.channel, "This guild's game channel has not been set.");
+					} else {
+						utils.sendBox(e.channel, "Game Channel", config.color("stat"), "This guild's game channel is <#" + channel + ">");
+					}
+					return true;
+				} else if (args.length == 2 && args[0] == "games") {
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to set the guild's game channel.");
+						return true;
+					}
+					const text = args[1];
+					const channel = utils.toChannel(text);
+					if (!channel) {
+						utils.sendErr(e.channel, "That is an invalid channel.");
+						return true;
+					}
+					if (guilds.get(e.guild.id, "game-channel") == null) {
+						guilds.set(e.guild.id, "game-channel", channel.id);
+						utils.sendBox(e.channel, "Game Channel", config.color("done"), "This guild's game channel has been set to <#" + channel.id + ">");
+					} else {
+						guilds.set(e.guild.id, "game-channel", null);
+						utils.sendBox(e.channel, "Game Channel", config.color("done"), "This guild's game channel has been unset.");
+					}
 					return true;
 				} else if (args.length == 2 && args[0] == "auto" && args[1] == "user") {
 					const roles = guilds.get(e.guild.id, "autoroles", "user");
@@ -323,6 +388,142 @@ module.exports = rigidbot => {
 						roles.push(id);
 						utils.sendBox(e.channel, "Free Roles", config.color("done"), "<@&" + id + "> is now a free role.");
 					}
+					return true;
+				} else if (args.length == 3 && args[0] == "whitelist" && args[1] == "command") {
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to whitelist a command.");
+						return true;
+					}
+					const cmd = utils.toCommand(args[2]);
+					if (cmd == null) {
+						utils.sendErr(e.channel, "That command does not exist.");
+						return true;
+					}
+					const list = guilds.get(e.guild.id, "command-whitelist");
+					const index = list.indexOf(cmd.name);
+					if (index == -1) {
+						list.push(cmd.name);
+						utils.sendBox(e.channel, "Command Whitelist", config.color("done"), "The **" + cmd.name + "** command is now whitelisted.");
+					} else {
+						list.splice(index, 1);
+						utils.sendBox(e.channel, "Command Whitelist", config.color("done"), "The **" + cmd.name + "** command is no longer whitelisted.");
+					}
+					return true;
+				} else if (args.length == 2 && args[0] == "whitelist" && args[1] == "command") {
+					const list = guilds.get(e.guild.id, "command-whitelist");
+					utils.sendBox(e.channel, "Command Whitelist", config.color("stat"), list.join(", "));
+					return true;
+				} else if (args.length == 3 && args[0] == "blacklist" && args[1] == "command") {
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to blacklist a command.");
+						return true;
+					}
+					const cmd = utils.toCommand(args[2]);
+					if (cmd == null) {
+						utils.sendErr(e.channel, "That command does not exist.");
+						return true;
+					}
+					const list = guilds.get(e.guild.id, "command-blacklist");
+					const index = list.indexOf(cmd.name);
+					if (index == -1) {
+						list.push(cmd.name);
+						utils.sendBox(e.channel, "Command Blacklist", config.color("done"), "The **" + cmd.name + "** command is now blacklisted.");
+					} else {
+						list.splice(index, 1);
+						utils.sendBox(e.channel, "Command Blacklist", config.color("done"), "The **" + cmd.name + "** command is no longer blacklisted.");
+					}
+					return true;
+				} else if (args.length == 2 && args[0] == "blacklist" && args[1] == "command") {
+					const list = guilds.get(e.guild.id, "command-blacklist");
+					utils.sendBox(e.channel, "Command Blacklist", config.color("stat"), list.join(", "));
+					return true;
+				} else if (args.length == 2 && args[0] == "mode" && args[1] == "command") {
+					utils.sendBox(e.channel, "Command Mode", config.color("stat"), "Commands are currently using a " + (guilds.get(e.guild.id, "command-mode") ? "whitelist" : "blacklist"));
+					return true;
+				} else if (args.length == 3 && args[0] == "mode" && args[1] == "command") {
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to change the command mode.");
+						return true;
+					}
+					var mode = false;
+					if (args[2] == "whitelist") {
+						mode = true;
+					} else if (args[2] == "blacklist") {
+						mode = false;
+					} else {
+						utils.sendErr(e.channel, "You must set the mode to whitelist or a blacklist.");
+						return true;
+					}
+					guilds.set(e.guild.id, "command-mode", mode);
+					utils.sendBox(e.channel, "Command Mode", config.color("done"), "Commands are now using a " + (mode ? "whitelist" : "blacklist"));
+					return true;
+				} else if (args.length == 3 && args[0] == "whitelist" && args[1] == "feature") {
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to whitelist a feature.");
+						return true;
+					}
+					const name = utils.toFeature(args[2]);
+					if (name == null) {
+						utils.sendErr(e.channel, "Unknown feature. Use one of the following: **xp**");
+						return true;
+					}
+					const list = guilds.get(e.guild.id, "feature-whitelist");
+					const index = list.indexOf(name);
+					if (index == -1) {
+						list.push(name);
+						utils.sendBox(e.channel, "Feature Whitelist", config.color("done"), "The **" + name + "** feature is now whitelisted.");
+					} else {
+						list.splice(index, 1);
+						utils.sendBox(e.channel, "Feature Whitelist", config.color("done"), "The **" + name + "** feature is no longer whitelisted.");
+					}
+					return true;
+				} else if (args.length == 2 && args[0] == "whitelist" && args[1] == "feature") {
+					const list = guilds.get(e.guild.id, "feature-whitelist");
+					utils.sendBox(e.channel, "Feature Whitelist", config.color("stat"), list.join(", "));
+					return true;
+				} else if (args.length == 3 && args[0] == "blacklist" && args[1] == "feature") {
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to blacklist a feature.");
+						return true;
+					}
+					const name = utils.toFeature(args[2]);
+					if (name == null) {
+						utils.sendErr(e.channel, "Unknown feature. Use one of the following: **xp**");
+						return true;
+					}
+					const list = guilds.get(e.guild.id, "feature-blacklist");
+					const index = list.indexOf(name);
+					if (index == -1) {
+						list.push(name);
+						utils.sendBox(e.channel, "Feature Blacklist", config.color("done"), "The **" + name + "** feature is now blacklisted.");
+					} else {
+						list.splice(index, 1);
+						utils.sendBox(e.channel, "Feature Blacklist", config.color("done"), "The **" + name + "** feature is no longer blacklisted.");
+					}
+					return true;
+				} else if (args.length == 2 && args[0] == "blacklist" && args[1] == "feature") {
+					const list = guilds.get(e.guild.id, "feature-blacklist");
+					utils.sendBox(e.channel, "Feature Blacklist", config.color("stat"), list.join(", "));
+					return true;
+				} else if (args.length == 2 && args[0] == "mode" && args[1] == "feature") {
+					utils.sendBox(e.channel, "Feature Mode", config.color("stat"), "Features are currently using a " + (guilds.get(e.guild.id, "feature-mode") ? "whitelist" : "blacklist"));
+					return true;
+				} else if (args.length == 3 && args[0] == "mode" && args[1] == "feature") {
+					if (!utils.hasPerm(e.member, "MANAGE_GUILD")) {
+						utils.sendErr(e.channel, "You do not have permission to change the feature mode.");
+						return true;
+					}
+					var mode = false;
+					if (args[2] == "whitelist") {
+						mode = true;
+					} else if (args[2] == "blacklist") {
+						mode = false;
+					} else {
+						utils.sendErr(e.channel, "You must set the mode to whitelist or a blacklist.");
+						return true;
+					}
+					guilds.set(e.guild.id, "feature-mode", mode);
+					utils.sendBox(e.channel, "Feature Mode", config.color("done"), "Features are now using a " + (mode ? "whitelist" : "blacklist"));
 					return true;
 				}
 			}

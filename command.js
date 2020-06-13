@@ -4,7 +4,7 @@ module.exports = class Command {
 		name = "test", perms = [],
 		alias = [], usage = [],
 		desc = "", run = async (args, e) => {},
-		root = false, info = []
+		root = false, info = [], immune = false
 	} = {}) {
 		this.name = name;
 		this.perms = perms;
@@ -14,5 +14,6 @@ module.exports = class Command {
 		this.run = run;
 		this.root = root;
 		this.info = info;
+		this.immune = immune;
 	}
 }

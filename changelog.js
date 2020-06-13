@@ -1,6 +1,30 @@
 
 module.exports = [
 	{
+		name: "Exploration Update",
+		version: "v1.2A",
+		date: "6/12/2020",
+		changes: [
+			add("preset command"),
+			add("experience command"),
+			add("backpack command"),
+			add("config enhancements"),
+			add("whitelist/blacklist systems"),
+			add("experience system"),
+			add("item system"),
+			add("levelup system"),
+			add("item payments"),
+			add("glass/bottle items"),
+			add("brick/clay items"),
+			add("cloth/yarn items"),
+			add("copper/iron items"),
+			add("flax/string items"),
+			add("rock/wood items"),
+			add("rope/stick items"),
+			add("sand/wood items"),
+			fix()
+		]
+	}, {
 		name: "Introductory Update",
 		version: "v1.1R",
 		date: "6/10/2020",

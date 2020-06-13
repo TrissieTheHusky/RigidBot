@@ -32,10 +32,9 @@ module.exports = rigidbot => {
 					count: 0
 				};
 			});
-			const channelid = guilds.get(e.guild.id, "poll-channel");
+			var channelid = guilds.get(e.guild.id, "poll-channel");
 			if (channelid == null) {
-				utils.sendErr(e.channel, "This guild does not have a poll channel set.");
-				return true;
+				channelid = e.channel.id;
 			}
 			const channel = bot.channels.cache.get(channelid);
 			if (channel == null) {

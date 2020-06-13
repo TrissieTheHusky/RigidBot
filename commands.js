@@ -8,6 +8,7 @@ module.exports = rigidbot => {
 		"version",
 		"changelog",
 		"devlog",
+		"preset",
 		"config",
 		"role",
 		"ping",

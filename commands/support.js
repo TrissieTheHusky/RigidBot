@@ -19,7 +19,7 @@ module.exports = rigidbot => {
 				user: e.user
 			}, {
 				pages: [
-					"Join the [support discord](https://discord.gg/RYc9YRZ) to ask questions, request help, or give feedback on the bot.",
+					"Join the [support discord](https://discord.gg/MbX6VMA) to ask questions, request help, or give feedback on the bot.",
 					"A list of possible commands you are able to use can be found by using the **help** command."
 				],
 				embed: {

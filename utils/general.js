@@ -2,6 +2,33 @@ module.exports = rigidbot => {
 	
 	const utils = rigidbot.utils;
 	
+	utils.listState = (wl, bl, md, item) => {
+		return md ? (wl.indexOf(item) != -1) : (bl.indexOf(item) == -1);
+	};
+
+	utils.toFeature = name => {
+		if (name == "xp") return name;
+		return null;
+	}
+	
+	utils.toCommand = name => {
+		name = name.toLowerCase().trim();
+		var res = null;
+		rigidbot.commands.forEach(cmd => {
+			if (cmd.name.toLowerCase() == name) {
+				res = cmd;
+			}
+		});
+		rigidbot.commands.forEach(cmd => {
+			cmd.alias.forEach(alias => {
+				if (alias.toLowerCase() == name) {
+					res = cmd;
+				}
+			});
+		});
+		return res;
+	};
+	
 	utils.pollEmbed = (user, poll) => {
 		const menus = rigidbot.utils;
 		const lines = [];

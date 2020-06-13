@@ -12,6 +12,13 @@ module.exports = rigidbot => {
 				return;
 			}
 		}
+		if (reaction.partial) {
+			try {
+				reaction.fetch();
+			} catch(e) {
+				return;
+			}
+		}
 		if (user.bot) return;
 		const o = reaction.message;
 		const g = o.guild.id;
@@ -23,7 +30,7 @@ module.exports = rigidbot => {
 			Object.keys(poll.options).forEach(emoji => {
 				if (utils.sameEmoji(utils.toEmoji(emoji, o.guild), reaction.emoji)) {
 					const option = poll.options[emoji];
-					option.count = reaction.count - 1;
+					option.count++;
 					hit = true;
 				}
 			});
@@ -39,6 +46,13 @@ module.exports = rigidbot => {
 		}
 	});
 	bot.on("messageReactionRemove", async (reaction, user) => {
+		if (reaction.partial) {
+			try {
+				reaction.fetch();
+			} catch(e) {
+				return;
+			}
+		}
 		if (reaction.message.partial) {
 			try {
 				reaction.message.fetch();
@@ -57,7 +71,7 @@ module.exports = rigidbot => {
 			Object.keys(poll.options).forEach(emoji => {
 				if (utils.sameEmoji(utils.toEmoji(emoji, o.guild), reaction.emoji)) {
 					const option = poll.options[emoji];
-					option.count = reaction.count - 1;
+					option.count--;
 					hit = true;
 				}
 			});

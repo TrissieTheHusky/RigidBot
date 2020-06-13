@@ -1,7 +1,6 @@
 module.exports = rigidbot => {
 	
 	const events = [
-		"experience",
 		"commands",
 		"guilds",
 		"logging",
