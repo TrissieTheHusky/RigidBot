@@ -15,7 +15,6 @@ module.exports = rigidbot => {
 			this.create(id, "message-channel", null);
 			this.create(id, "polls", {});
 			this.create(id, "poll-channel", null);
-			this.create(id, "game-channel", null);
 			this.create(id, "autoroles", "user", []);
 			this.create(id, "autoroles", "bot", []);
 			this.create(id, "freeroles", []);

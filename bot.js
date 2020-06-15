@@ -14,7 +14,6 @@ require("./configs.js")(rigidbot);
 require("./utils.js")(rigidbot);
 require("./menus.js")(rigidbot);
 require("./commands.js")(rigidbot);
-require("./items.js")(rigidbot);
 require("./events.js")(rigidbot);
 
 bot.login(process.env.TOKEN);

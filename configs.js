@@ -4,8 +4,8 @@ module.exports = rigidbot => {
 	const list = [
 		"config",
 		"guilds",
-		"users",
-		"logs"
+		"logs",
+		"suggest"
 	];
 	list.forEach(name => {
 		cfg[name] = new (require("./configs/" + name + ".js")(rigidbot))();

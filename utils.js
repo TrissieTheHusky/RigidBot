@@ -4,9 +4,7 @@ module.exports = rigidbot => {
 		"general",
 		"identify",
 		"parsers",
-		"content",
-		"items",
-		"experience"
+		"content"
 	];
 	
 	rigidbot.utils = {};
