@@ -6,12 +6,11 @@ module.exports = rigidbot => {
 	rigidbot.commands.push(new Command({
 		name: "help",
 		usage: [
-			"help",
 			"help [command]"
 		],
 		immune: true,
 		info: [
-			"Shows you information about a given command or a list of available commands and their descriptions."
+			"Shows command descriptions. *Use reactions to switch pages.*"
 		],
 		desc: "Shows a list of commands.",
 		run: async e => {

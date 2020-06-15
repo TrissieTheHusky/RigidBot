@@ -7,7 +7,6 @@ module.exports = rigidbot => {
 	};
 
 	utils.toFeature = name => {
-		if (name == "xp") return name;
 		return null;
 	}
 	

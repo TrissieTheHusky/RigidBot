@@ -1,7 +1,14 @@
 
 module.exports = [
-	
 	{
+		date: "6/14/2020",
+		author: "Rigidity",
+		log: [
+			"It might seem like a giant step backwards, and in a way it is, but I have removed the item and xp systems. Sorry to anyone in the alpha that enjoyed it, but it just doesn't really work with the other bot functions well, and I'm trying to keep this more of a utility bot.",
+			"This customization update will bring forth lots of ways to restrict access to certain bot functionalities, and also introduce some more utility commands as well. The game components are being worked on in a separate bot called Qurion.",
+			"If you have any suggestions, please use the new suggestion command."
+		]
+	}, {
 		date: "6/11/2020",
 		author: "Rigidity",
 		log: [

@@ -1,7 +1,26 @@
 
 module.exports = [
 	{
-		name: "Exploration Update",
+		name: "Customization Update",
+		version: "v1.2B",
+		date: "6/14/2020",
+		changes: [
+			add("embed command"),
+			add("suggest command"),
+			add("channel whitelist/blacklist"),
+			remove("balance command"),
+			remove("pay command"),
+			remove("experience command"),
+			remove("backpack command"),
+			remove("all items"),
+			remove("experience system"),
+			remove("item system"),
+			remove("economy system"),
+			remove("levelup system"),
+			remove("item payments")
+		]
+	}, {
+		name: "Customization Update",
 		version: "v1.2A",
 		date: "6/12/2020",
 		changes: [
@@ -74,7 +93,7 @@ module.exports = [
 			add("pay command"),
 			add("dice command"),
 			add("coin command"),
-			add("economy"),
+			add("economy system"),
 			add("join messages"),
 			add("leave messages")
 		]

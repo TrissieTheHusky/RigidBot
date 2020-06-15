@@ -7,7 +7,7 @@ module.exports = rigidbot => {
 		alias: ["coin", "flip", "cf"],
 		desc: "Flips a coin and tells you the result.",
 		usage: [
-			"coinflip"
+			"coin"
 		],
 		run: async e => {
 			if (e.args.length != 0) return false;

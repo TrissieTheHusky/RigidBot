@@ -5,6 +5,7 @@ module.exports = rigidbot => {
 		"aliases",
 		"eval",
 		"support",
+		"suggest",
 		"version",
 		"changelog",
 		"devlog",
@@ -21,10 +22,7 @@ module.exports = rigidbot => {
 		"unban",
 		"info",
 		"poll",
-		"backpack",
-		"experience",
-		"balance",
-		"pay",
+		"embed",
 		"dice",
 		"coin"
 	];
