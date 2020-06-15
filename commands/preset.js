@@ -25,12 +25,20 @@ module.exports = rigidbot => {
 				guilds.set(e.guild.id, "command-whitelist", []);
 				guilds.set(e.guild.id, "command-blacklist", []);
 				guilds.set(e.guild.id, "command-mode", false);
+				guilds.set(e.guild.id, "feature-whitelist", []);
+				guilds.set(e.guild.id, "feature-blacklist", []);
+				guilds.set(e.guild.id, "feature-mode", false);
 			} else if (e.args[0] == "moderation") {
 				guilds.set(e.guild.id, "command-whitelist", [
 					"kick", "ban", "warn", "unban", "purge", "info", "history"
 				]);
 				guilds.set(e.guild.id, "command-blacklist", []);
 				guilds.set(e.guild.id, "command-mode", true);
+				guilds.set(e.guild.id, "feature-whitelist", []);
+				guilds.set(e.guild.id, "feature-blacklist", [
+					"xp"
+				]);
+				guilds.set(e.guild.id, "feature-mode", false);
 			} else {
 				utils.sendErr(e.channel, "Unknown preset. Run the preset command without arguments to see a list.");
 				return true;
